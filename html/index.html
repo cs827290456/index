@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>工作</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<link type="text/css" rel="stylesheet" media="all" href="../assets/plugins/MUI/css/mui.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="../assets/font/iconfont.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="../assets/css/huixing.min.css" />
+</head>
+<body>
+<header class="mui-bar mui-bar-nav">
+<!--	<a class="mui-icon mui-icon-arrowleft mui-pull-left mui-action-back"></a>-->
+	<h1 class="mui-title" id="work_name"></h1>
+</header>
+<nav class="mui-bar mui-bar-tab" id="nav">
+</nav>
+<article class="mui-content mui-scroll-wrapper">
+	<div class="container" >
+		<div class="zTreeDemoBackground left" id="treeDiv">
+			<ul id="treeDemo" class="ztree" style="overflow-x:hidden"></ul>
+		</div>
+	</div>
+</article>
+</body>
+
+</html>
+<script type="text/javascript" src="../assets/plugins/jQuery/jquery-1.11.1/jquery.min.js"></script>
+<link type="text/css" rel="stylesheet" media="all" href="layer_mobile/need/layer.css" />
+<script type="text/javascript" src="layer_mobile/layer.js"></script>
+
+<link rel="stylesheet" href="zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+
+<style>
+	/*ul.ztree {margin-top:85px;margin-left:40px;width:300px;height:560px;overflow-y:scroll;overflow-x:auto;}*/
+	ul.ztree {height:100%;overflow-y:scroll;overflow-x:auto;}
+	/*ul.log {border: 1px solid #617775;background: #f0f6e4;width:600px;height:170px;overflow: hidden;}*/
+	/*ul.log.small {height:45px;}*/
+	/*ul.log li {color: #666666;list-style: none;padding-left: 10px;}*/
+	/*ul.log li.dark {background-color: #E3E3E3;}*/
+	.ztree li{position: relative;}
+	/*.zoom{*/
+	/*	transform: scale(1,1);*/
+	/*	-ms-transform: scale(1,1);*/
+	/*	-webkit-transform: scale(1.3,1.3);*/
+	/*}*/
+
+	.ztree li span.button {
+		line-height: 0;
+		margin: 0;
+		width: 22px;
+		height: 22px;
+
+	}
+
+	.ztree li {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		line-height: 22px;
+	}
+
+	.ztree * {
+		padding: 0;
+		margin: 0;
+		font-size: 16px;
+		/* font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif; */
+	}
+
+	.ztree li span.button.switch {
+		width: 18px;
+		height: 23px;
+	}
+
+	.ztree li a.curSelectedNode {
+		padding-top: 0px;
+		background-color: #FFE6B0;
+		color: black;
+		height: 20px;
+		border: 1px #FFB951 solid;
+		opacity: 0.8;
+	}
+</style>
+
+<!--<script type="text/javascript" src="zTree_v3/js/jquery-1.4.4.min.js"></script>-->
+<script type="text/javascript" src="zTree_v3/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="zTree_v3/js/jquery.ztree.excheck.js"></script>
+<script type="text/javascript" src="zTree_v3/js/jquery.ztree.exedit.js"></script>
+<script type="text/javascript" src="js/view.js"></script>
+<script type="text/javascript" src="js/comm-work2.js"></script>
+<script type="text/javascript" src="plugs/plugs.js"></script>
+<!-- 复制插件 -->
+<script type="text/javascript" src="plugs/plug-menu/clipboard.min.js"></script>
+<script type="text/javascript">
+
+
+	function openUrl(url, h) {
+		openView({
+			vid:getViewVid(),
+			url:url,
+			h:h,
+			shade:0.1
+		})
+	}
+
+	function androidExit() {
+		//layer.alert
+		layer.open({
+			content: '您确定退出程序？'
+			, btn: ['删除',"系统设置", '取消']
+			, skin: 'footer'
+			, yes1: function (index) {
+				// workSet(key,  null);
+				// showInfo("删除成功!!!");
+				// setTimeout(function(){
+					colseEditHtml();
+				// },1000);
+			},yes2: function (index) {
+				// workSet(key,  null);
+				// showInfo("删除成功!!!");
+				// setTimeout(function(){
+				colseEditHtml();
+				// },1000);
+			}
+		});
+	}
+
+	function getTree(){
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+	}
+</script>
+</html>

@@ -1,0 +1,121 @@
+@charset "utf-8";
+.js_city_content{
+	font-size:14px !important;
+	padding-bottom: 50px;
+}
+.f12 {
+    font-size: 1em;
+}
+.city-container {
+    background: #f0eff5 none repeat scroll 0 0;
+    position: absolute;
+    width: 100%;
+}
+.city-container .fixed-part-height {
+    height: 3.9em;
+}
+.city-container .fixed-part {
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+.city-head {
+    background: #59a5f0 none repeat scroll 0 0;
+    color: #fff;
+    font-size: 0.8em;
+    height: 2.25em;
+    line-height: 2.25em;
+}
+.city-head .w15 {
+    width: 13%;
+}
+.city-head .w80 {
+    width: 82%;
+}
+.city-head .search-input {
+    background: #fff none repeat scroll 0 0;
+    border-radius: 5px;
+    font-size: 0.6em;
+    padding: 0.3em 1em 0.3em 0.3em;
+    text-align: center;
+    vertical-align: middle;
+    width: 92%;
+}
+.city-padding {
+    padding: 0.3em 0.5em 0;
+}
+.city-btn-close {
+    background: #ccc none repeat scroll 0 0;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 0.6em;
+    height: 1em;
+    position: absolute;
+    right: -0.1em;
+    top: 0.7em;
+    width: 1em;
+}
+.city-btn-close i {
+    left: 0.18em;
+    position: absolute;
+    top: -0.64em;
+}
+.city-list {
+    margin-top: 0.25em;
+}
+.city-list ul li {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #eee;
+    border-radius: 0px;
+    float: left;
+    margin-bottom: 0.5em;
+    margin-right: 0.5em;
+    padding: 0.2em 0;
+    text-align: center;
+    width: 28%;
+}
+.city-list ul li:nth-child(3n) {
+    margin-right: 0;
+}
+.airport-list {
+    background: #fff none repeat scroll 0 0;
+}
+.airport-list ul li {
+    border-bottom: 1px solid #eee;
+    padding: 0.5em 0.5em 0.5em 1em;
+}
+.airport-list ul li span:last-child {
+    color: #999;
+    font-size: 0.6em;
+    margin-left: 0.7em;
+}
+.letter-bar {
+    background: rgba(255, 255, 255, 0.3) none repeat scroll 0 0;
+    color: #59a5f0;
+    font-size: 12px;
+    position: fixed;
+    right: 0;
+    text-align: center;
+    top: 3.92em;
+    width: 1.3em;
+}
+.letter-bar ul li {
+    height: 1.3em;
+    line-height: 1.3em;
+}
+.letter-bar ul li.actived {
+    background: rgba(221, 221, 221, 0.5) none repeat scroll 0 0;
+}
+.letter-alert {
+    background: #59a5f0 none repeat scroll 0 0;
+    border-radius: 5em;
+    color: #fff;
+    font-size: 0.9em;
+    height: 2em;
+    left: 48%;
+    line-height: 2em;
+    position: fixed;
+    text-align: center;
+    top: 40%;
+    width: 2em;
+}

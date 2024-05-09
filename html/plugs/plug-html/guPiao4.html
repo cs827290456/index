@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script type="text/javascript" src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://lib.baomitu.com/echarts/4.7.0/echarts.min.js"></script>
+    <!-- 支持弹框分析历史数据 -->
+    <link type="text/css" rel="stylesheet" media="all" href="../../layer_mobile/need/layer.css" />
+    <script type="text/javascript" src="../../../assets/plugins/layerMobile/layer.js"></script>
+</head>
+<style>
+    input{
+        margin-top: 5px;
+    }
+    /*
+
+    chrome启动方式增加如下参数
+    "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir=C:\MyChromeDevUserData --proxy-server=192.168.1.14:10809
+    */
+</style>
+<body >
+<span id="gp">
+</span>
+<!--<span id="data"></span>-->
+<div style="padding-top: 10px;width: 100px;position: fixed;top:0px;right:0px;float: left">
+<!--    <input type="button" onclick="showChart(false)" value="关闭图表">-->
+<!--    <input type="button" onclick="showChart(true)" value="显示图表">-->
+<!--    <input type="button" onclick="showChartDate(30*1, this)" value="近1月">-->
+<!--    <input type="button" onclick="showChartDate(30*2, this)" value="近2月">-->
+<!--    <input type="button" onclick="showChartDate(30*3, this)" value="近3月">-->
+<!--    <input type="button" onclick="showChartDate(365*1, this)" value="近1年">-->
+<!--    <input type="button" onclick="showChartDate(365*2, this)" value="近2年">-->
+<!--    <input type="button" onclick="showChartDate(365*3, this)" value="近3年">-->
+<!--    <input type="button" onclick="showChartDate(365*4, this)" value="近4年">-->
+<!--    <input type="button" onclick="showChartDate(365*5, this)" value="近5年">-->
+<!--    <input type="button" onclick="showChartDate(365*10, this)" value="近10年">-->
+    <input type="button" onclick="location.href='guPiao3.html'" value="数据监控">
+
+    <select style="margin-top: 4px;width:70px;height: 26px;" onchange="$('#ftxt').val( $(this).val() ); sortInfo(1)">
+        <option value="">全部</option>
+        <option>银行</option>
+        <option>黄金</option>
+        <option>医药</option>
+        <option>教育</option>
+        <option>军</option>
+        <option>ST</option>
+        <option>*ST</option>
+    </select>
+    <input type="button" onclick="getMinInfo(365*10, this)" value="开始分析">
+    <input type="text" placeholder="过滤" id="ftxt" style="width:32px;height: 18px;"><input style="padding-top: 1px;padding-bottom: 3px;" type="button" onclick="sortInfo(1)" value="查">
+<!--    <input type="button" onclick="sortInfo(1)" value="价格正序">-->
+<!--    <input type="button" onclick="sortInfo(2)" value="价格倒序">-->
+<!--    <input type="button" onclick="sortInfo(4)" value="涨幅正序">-->
+<!--    <input type="button" onclick="sortInfo(5)" value="涨幅倒序">-->
+
+    <input type="button" onclick="wbw()" value="详细分析">
+
+<!--    <input type="button" onclick="testLa('sh600036')" value="测试信息">-->
+</body>
+</div>
+<script type="text/javascript">
+
+
+    function wbw() {
+        var ix = 1;
+        while (document.getElementById("code_" + ix)){
+            //console.log(document.getElementById("code_" + ix).value)
+            var code = document.getElementById("code_" + ix).value;
+            wbwInfo(code);
+            ix++;
+        }
+    }
+
+    var avg_value_month = 4;//近几个月的平均值
+    //中国能建  sh601868    3.4
+    //招商银行  sh600036    34
+    //华东得机  sz002685    3.5
+    //银宝山新  sz002786    6.1
+    //青岛银行   002948     3.0
+    //贵阳银行	601997   5.0
+    //  瑞丰  601528  6
+    //  郑州  002936  2
+    //  紫金  601860  2.3
+    //  齐鲁  601665  4
+    //var month = 30;
+    var avgTGL = 60;        //平均相隔多少天
+    var avgTGL_NUm = 3;     //取多少次数
+    var isTest = false;      //测试模式
+    var showTitle = false;
+    var runIndex = 0;
+    var gpxx = [];
+    var avgArr = [];//平均股票信息
+    var avgInfo = "";
+    function wbwInfo(code) {
+        //查
+        var start = getBeforeDate(avgTGL_NUm * avgTGL);
+        var end =  getBeforeDate(0);
+
+        var url1 = "https://q.stock.sohu.com/hisHq?code=cn_"+ code +"&start="+ start +"&end="+ end;
+        // console.log(url1)
+        $.ajax({
+            type: "GET",
+            url: url1,
+            success: function (result) {
+                var json = JSON.parse(result)
+                // console.log(json)
+                var rq = [];
+                var data = [];
+                var arr = json[0].hq;
+                var code = json[0].code;
+                console.log(JSON.stringify(arr))
+                console.log(code+">>>>>>>>>>>>>>>>>>>",arr.length)
+                var one_size = arr.length/avgTGL_NUm;
+                for(var nl=0;nl<avgTGL_NUm; nl++){
+                    var arr___ = [];
+                    for (var xx=0;xx<arr.length;xx++){
+                        if(xx < (nl + 1) * one_size){
+                            arr___.push(arr[xx])
+                        }
+                    }
+                    var idstr = code +"_"+ nl
+                    // console.log(JSON.stringify(arr___))
+                    console.log(">>>>", nl ,arr___.length, arr___)
+//                    console.log(arr___)
+                    $("#" + idstr).html( getPoint( arr___) )
+                }
+                var priceValue = parseFloat($("#" + code + "_avg").data("price"))
+                var avgMonth =  parseFloat(getAvgByMonth(arr));
+                $("#" + code + "_avg").html(avgMonth);// + ",--->avgMonth="+ avgMonth +",priceValue="+priceValue+",avgMonth-priceValue=" + (avgMonth - priceValue) )
+                if(avgMonth< priceValue){
+                    $("#" + code + "_avg").css("color","green")
+                }else{
+                    $("#" + code + "_avg").css("color","red")
+                }
+                $("#" + code + "_avg_bfb").html( ((avgMonth-priceValue)/avgMonth).toFixed(4) );
+            }
+        })
+    }
+
+
+
+    function showHistory(code) {
+        var html ="<iframe height='600px' width='1000px' src='guPiao-comm.html?code="+ code +"'>";
+        layer.open({
+            type: 3,
+            area:["500px","400px"],
+            content: html
+        });
+    }
+    var s = {
+        "data":[
+            {"name":"浙商",code:"sh601916"},
+            {"name":"交通",code:"sh601328"},
+            {"name":"工商",code:"sh601398"},
+            {"name":"招商",code:"sh600036","desc":"34.41"},
+            {"name":"北京",code:"sh601169"},
+            {"name":"建设",code:"sh601939"},
+            {"name":"农业",code:"sh601288"},
+            {"name":"中国",code:"sh601988"},
+            {"name":"华东",code:"sz002685"},
+            {"name":"能建",code:"sh601868"},
+            {"name":"格力",code:"sz000651"},
+            /* */
+        ]
+    };
+
+    function padding(num, length) {
+        return (Array(length).join("0") + num).slice(-length);
+    }
+
+    if(!isTest) {
+        s.data = [];
+        for (var gp = 0; gp < 9999; gp++) {
+            // s.data.push({name:"zd",code:"sh60" + padding(gp,4)})
+            s.data.push({name: "zd", code: "sz00" + padding(gp, 4)})
+        }
+        for (var gp = 0; gp < 9999; gp++) {
+            s.data.push({name: "zd", code: "sh60" + padding(gp, 4)})
+            // s.data.push({name:"zd",code:"sz00" + padding(gp,4)})
+        }
+    }
+
+    function getNewArray(array, subGroupLength) {
+        let index = 0;
+        let newArray = [];
+        while(index < array.length) {
+            newArray.push(array.slice(index, index += subGroupLength));
+        }
+        return newArray;
+    };
+
+    function sortTable(index) {
+        $.sortTable.sort('tableSort',index)
+    }
+
+    var GPARR= getNewArray(s.data, 20);
+
+    var index__ = 0;
+    function sortInfo(type){
+        index__ = 0;
+        var ftxt = $("#ftxt").val()
+        if(type == 1){
+            arr__.sort(compareDesc("price")); //__
+        }else if(type == 2){
+            arr__.sort(compareAsc("price")); //__
+        }else if(type == 4){
+            arr__.sort(compareDesc("zf")); //__
+        }else if(type == 5){
+            arr__.sort(compareAsc("zf")); //__
+        }
+        var html = "<table border='1'  id='tableSort'>"
+        html +="<thead>"
+        html +="<tr style='cursor: pointer'><th onclick='sortTable(0)'>id</th> <th onclick='sortTable(1)'>name</th> <th onclick='sortTable(2)'>+-</th> <th onclick='sortTable(3)'>price</th> <th onclick='sortTable(4)'>code</th> <th onclick='sortTable(5)'>1</th> <th onclick='sortTable(6)'>2</th>"
+        for(var a=0;a<avgTGL_NUm;a++) {
+            html += "<th onclick='sortTable("+ (a+7) +")'>"+ (a+1) + "*" + avgTGL +"</th>"
+            //<th onclick='sortTable(7)'>3</th> <th onclick='sortTable(8)'>4</th> <th onclick='sortTable(9)'>5</th> <th onclick='sortTable(10)'>6</th></tr>
+        }
+        html += "<th onclick='sortTable(10)'>avg("+ avg_value_month * 30 +") </th>"
+        html += "<th onclick='sortTable(11)'>avg%</th>"
+        html +="</tr>";
+        html +="</thead>"
+        for(var x=0;x<arr__.length;x++){
+            var it = arr__[x];
+            //console.log(it["name"])
+            if(it["name"]) {
+                if (!ftxt || (it["name"] && it["name"].indexOf(ftxt) != -1)) {
+                    html += "<tr>"
+                    html += "<td>" + ++index__  +"</td>"
+                    for (i in it) {
+                        html += "<td title='"+ i +"'>"
+                        html += it[i];
+                        html += "</td>"
+                    }
+                    html += "<td title='"+ i +"' onclick=showHistory('"+ it["code"] +"')><a style='cursor: pointer'>历史数据</a></td>"
+                    html += "<td>活跃情况" + "<input type='hidden' id='code_"+ index__ +"' value='"+ it["code"] + "'></td>"
+                    for(var a=0;a<avgTGL_NUm;a++) {
+                        html += "<td id='cn_"+ it["code"] +"_"+ a +"'>...</td>"
+                    }
+                    html += "<td id='cn_"+ it["code"] +"_avg' data-price='"+ it['price'] +"'>0</td>"
+                    html += "<td id='cn_"+ it["code"] +"_avg_bfb'>-</td>"
+                    html += "</tr>"
+                }
+            }
+        }
+        html += "</table>"
+        // console.log(arr__)
+        $("#gp").html(html)
+    }
+
+    var arr__ = [];
+    var fx_index = 0;
+    function getMinInfo() {
+        fx_index = 0;
+        arr__ = [];
+        var len = GPARR.length;
+        for(var x=0; x< len ;x++){
+            var xitem = GPARR[x];
+            var keyArr = [];
+            for(k=0;k<xitem.length;k++){
+                keyArr.push("s_"+xitem[k].code)
+            }
+            // console.log(keyArr)
+
+            // var lenth = s.data.length;
+            // for(var i=0; i<lenth ;i++){
+            //     var item = s.data[i];
+                var url = "https://qt.gtimg.cn/q=" + keyArr.join(",");
+                // console.log(url)
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    success: function(result) {
+                        var rs = result.split(";")
+                        for(i=0;i<rs.length;i++){
+
+                            if(rs[i].length>3){
+                                var str = rs[i].split("\"")[1]
+                                var s_ = str.split("~");
+                                //console.log(s_[1], s_[2], s_[3]);
+                                // arr.push({
+                                //     price: s_[3] || 0,
+                                //     name:s_[1],
+                                //     zf:s_[5],
+                                //     code: s_[2]
+                                // })
+                                var zf = s_[5];
+                                var name = s_[1];
+                                var price = s_[3] || 0;
+                                var code = s_[2];
+                                if(name && code)
+                                arr__.push({name:name,zf: parseFloat(zf),price: parseFloat(price),code:code})
+                                // console.log(code)
+                            }
+                        }
+                        $("#gp").html("分析进度：" + ++ fx_index + "/" + len + "【"+ parseInt(fx_index/len * 100) +"%】")
+                        if(fx_index >= len){
+                            window.setTimeout(function () {
+                                sortInfo(1);
+                            }, 100);
+                        }
+                    }
+                });
+            // }
+        }
+
+        $("#gp").html("开始分析中...")
+        // sortInfo(3)
+    }
+
+
+
+    function showChart(type){
+        if(type){
+            gpChart();
+            showTitle = true;
+        }else{
+            showTitle = false;
+            $(".chart").hide();
+        }
+    }
+
+    function showChartDate(day,btn) {
+        // console.log(btn.value)
+        avgInfo = btn.value;
+        // console.log(btn)
+        var end = getBeforeDate(0)
+        var start =  getBeforeDate(day);
+        gpChart(start,end);
+    }
+
+    function getBeforeDate(n){
+        var n = n;
+        var d = new Date();
+        var year = d.getFullYear();
+        var mon=d.getMonth()+1;
+        var day=d.getDate();
+        if(day <= n){
+            if(mon>1) {
+                mon=mon-1;
+            }
+            else {
+                year = year-1;
+                mon = 12;
+            }
+        }
+        d.setDate(d.getDate()-n);
+        year = d.getFullYear();
+        mon=d.getMonth()+1;
+        day=d.getDate();
+        // var s = year+"-"+(mon<10?('0'+mon):mon)+"-"+(day<10?('0'+day):day);
+        var s = year+""+(mon<10?('0'+mon):mon)+""+(day<10?('0'+day):day);
+        return s;
+    }
+
+    function ininTable() {
+        var html = "<table border='0' id='tableSort'>";
+        html +="<thead>"
+        html +="<tr><th>id</th> <th>名字</th> <th>xf</th> <th>price</th> <th>code</th> <th>1</th> <th>2</th> <th>3</th> <th>4</th> <th>5</th> <th>6</th></tr>"
+        html +="</thead>"
+        html +="<tbody>"
+        for (var i=0;i<s.data.length;i++){
+            var item = s.data[i];
+            var code = item.code.substring(2, item.code.length)
+            html += "<tr>"
+            html += "<td>"
+            html += "<span id='gp_"+ code +"'>...</span>";
+            html += "</td>"
+            html += "<td>"
+            html += '<div class="chart" id=\"cn_'+ code +'\" style=\"width: 200px;height:40px\;display: none"></div>'
+            html += "</td>"
+            html += "</tr>"
+        }
+        html +="</tbody></table>"
+        $("#gp").html(html);
+    }
+
+    function getGuPiaoInfo(code) {
+        // console.log(s.data.length)
+        for(i=0;i<s.data.length;i++){
+            var code2 = s.data[i].code;
+            // console.log(code, code2)
+            if(code2.indexOf(code) != -1){
+                return s.data[i];
+            }
+        }
+        return {};
+    }
+
+    window.onload = function () {
+        // ininTable();
+        // runfun()
+        getMinInfo(365*10, this);
+    }
+
+    function runfun() {
+        var keyArr = [];
+        for(k=0;k<s.data.length;k++){
+            keyArr.push("s_"+s.data[k].code)
+        }
+        var url = "https://qt.gtimg.cn/q=" + keyArr.join(",");
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(result) {
+                var arr = [];
+                var rs = result.split(";")
+                for(i=0;i<rs.length;i++){
+                    if(rs[i].length>3){
+                        var str = rs[i].split("\"")[1]
+                        var s_ = str.split("~");
+                        //console.log(s_[1], s_[2], s_[3]);
+                        // arr.push({
+                        //     price: s_[3] || 0,
+                        //     name:s_[1],
+                        //     zf:s_[5],
+                        //     code: s_[2]
+                        // })
+                        var zf = s_[5];
+                        var html = "";
+                        var name = s_[1];
+                        var price = s_[3] || 0;
+                        var code = s_[2];
+                        var color = parseFloat(zf) > 0 ? " red "  : (parseFloat(zf) < 0 ? " green " : "" )
+                        // console.log(code)
+                        var html = ""
+                        if(avgArr.length == 0){
+                            html += ""
+                        }else if(price < avgArr[code]){
+                            html += "【安全】";
+                        }else{
+                            html +=  "【风险】";
+                        }
+                        var desc = getGuPiaoInfo(code);
+                        // console.log(desc, code)
+                        desc = desc.desc ? "("+ desc.desc +")" : "";
+                        html += "<span >" + ( showTitle ? (name + "-") : "") +"</span><span title='"+ name +"' style='color: "+ color +"'>"+ price + "|"+ zf  + "</span>" + desc;
+                        $("#gp_" + code).html(html)
+
+                    }
+                }
+                // gpxx = arr;
+                // var html =  "";
+                // for(i in arr){
+                //     var color = parseFloat(arr[i].zf) > 0 ? " red "  : (parseFloat(arr[i].zf) < 0 ? " green " : "" )
+                //     html += "<span >" + ( showTitle ? (arr[i].name + "-") : "") +"</span><span title='"+ arr[i].name +"' style='color: "+ color +"'>"+ arr[i].price +"|"+ arr[i].zf +"</span><br>";
+                // }
+                // $("#data").html(html);
+                window.setTimeout(function () {
+                    runIndex ++
+                    $("#msg").text(runIndex%3==0 ? "." : ( runIndex%3==1 ? ".." : "..."))
+                    runfun();
+                }, 1000)
+
+            }
+        });
+    }
+
+    //// url = "https://q.stock.sohu.com/hisHq?code=cn_601766,cn_000002&start=20210101&end=20210312";
+    // 0: 未知
+    // 1: 股票名称
+    // 2: 股票代码
+    // 3: 当前价格
+    // 4: 涨跌
+    // 5: 涨跌%
+    // 6: 成交量（手）
+    // 7: 成交额（万）
+    // 8:
+    // 9: 总市值  sz
+    function gpChart(start, end) {
+        var start = start || getBeforeDate(365);
+        var end = end || getBeforeDate(0);
+        var html = "";
+        for(k=0;k<s.data.length;k++){
+            //keyArr.push("s_"+s.data[k].code)
+            var code = s.data[k].code
+            code = code.substring(2,code.length)
+            html+= '<div id="cn_'+ code +'" style="width: 650px;height:200px"></div>'
+        }
+        //
+        $("#chart").html(html);
+        for(k=0;k<s.data.length;k++){
+            var code = s.data[k].code
+            code = code.substring(2,code.length)
+                      //https://q.stock.sohu.com/hisHq?code=cn_000651&start=20220310&end=20230310
+                      //https://q.stock.sohu.com/hisHq?code=cn_601328&start=20230309&end=20220314
+            // var url1 = "https://q.stock.sohu.com/hisHq?code=cn_"+ code +"&start=20220310&end=20230310"
+            var url1 = "https://q.stock.sohu.com/hisHq?code=cn_"+ code +"&start="+ start +"&end="+ end;
+            // console.log(url1)
+            $.ajax({
+                type: "GET",
+                url: url1,
+                success: function (result) {
+                    var json = JSON.parse(result)
+                    // console.log(json)
+                    var rq = [];
+                    var data = [];
+                    var arr = json[0].hq;
+                    var code = json[0].code;
+                    var sum = 0;
+                    for (var i=0;i<arr.length;i++){
+                        rq[i] = arr[i][0]
+                        data[i] = arr[i][2]
+                        sum += parseFloat(arr[i][2]);
+                    }
+                    var avg = sum/arr.length;
+                    avgArr[code.substring(3,code.length)] = avg;
+                    // console.log(sum +",");
+                    // console.log(rq);
+                    // console.log(data)
+
+                    var myChart = echarts.init(document.getElementById(code));
+                    var option = {
+                        // title: {
+                        //     text: getGuPiaoName(code) + '\n平均:' + avg,
+                        //     textStyle:{
+                        //         fontSize:12
+                        //     }
+                        // },
+                        tooltip: {
+                            // show: false
+                        },
+                        // legend: {
+                        //     data: ['销量'],
+                        //     tooltip: {
+                        //         show: false
+                        //     }
+                        // },
+                        xAxis: {
+                            data: rq.reverse(),//['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+                        },
+                        grid: {
+                            x: 0,
+                            y: 15,
+                            x2: 0,
+                            y2: 0
+                        },
+                        yAxis: {},
+                        series: [
+                            {
+                                name: '价格',
+                                type: 'bar',
+                                markLine : {
+                                    data : [
+                                        {type :'average', name: '平均值'}
+                                    ],
+                                    symbol: ['none', 'none'],
+                                    position:"insideTopCenter",
+                                    itemStyle:{
+                                          normal:{
+                                            lineStyle:{
+                                                type:'dotted',
+                                                color:'#ff0702'
+                                            },
+                                            label:{
+                                                show:true,
+                                                position:'middle',
+                                                formatter: avgInfo + "平均 : "+ avg,
+                                            }
+                                        }
+                                    },
+                                    large:true,
+                                    effect:{
+                                        show: false,
+                                        loop: true,
+                                        period: 0,
+                                        scaleSize : 2,
+                                        color : null,
+                                        shadowColor : null,
+                                        shadowBlur : null
+                                    },
+                                },
+                                itemStyle:{
+                                    color:"rgba(32,32,32,0.93)"
+                                },
+                                data: data.reverse()//[5, 20, 36, 10, 10, 20]
+                            }
+                        ]
+                    };
+                    myChart.setOption(option);
+                }
+            })
+        }
+        $(".chart").show();
+    }
+
+
+    function compareDesc(propertyName) {
+        return function(object1, object2) {
+            // var value1 = parseFloat(object1[propertyName]);
+            // var value2 = parseFloat(object2[propertyName]);
+            var value1 = object1[propertyName];
+            var value2 = object2[propertyName];
+            if(value2 < value1) {
+                return -1;
+            } else if(value2 > value1) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    /**
+     * json对象数组按照某个属性排序:升序排列
+     * @param {Object} propertyName
+     */
+    function compareAsc(propertyName) {
+        return function(object1, object2) {
+            // var value1 = parseFloat(object1[propertyName]);
+            // var value2 = parseFloat(object2[propertyName]);
+            var value1 = object1[propertyName];
+            var value2 = object2[propertyName];
+            if(value2 < value1) {
+                return 1;
+            } else if(value2 > value1) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
+    //推荐信息：当前股票小于平均就推荐购买
+    function getAvgByMonth(data){
+        var size = avg_value_month * 30;
+        if(size > data.length){
+            size = data.length;
+        }
+        var sum = 0;
+        for(var i=0;i<size;i++){
+            var item = parseFloat(data[i][2]) //当前值
+            sum += item;
+        }
+        var avg = sum/size
+        return avg.toFixed(4);
+    }
+
+    function getPoint(data){
+        var size = data.length;
+        var sum = 0;
+        for(var i=0;i<size;i++){
+            var item = parseFloat(data[i][2]) //当前值
+            sum += item;
+            //console.log(item)
+        }
+        var avg = sum/size;//平均数
+        //有多少次经过平均数
+        var avgPoint = 0;
+        for(var i=0;i<size;i++){
+            var item1 = parseFloat(data[i][2]) //当前值
+            var v1 = item1-avg
+            if(v1 > 0){
+                if(data[i+1]){
+                    var item2  = parseFloat(data[i+1][2]) //当前值
+                    if(item2-avg < 0){
+                        avgPoint++;
+                        // console.log(data[i],  avg,  data[i+1])
+                    }
+                }
+            }
+            if(v1 < 0){
+                if(data[i+1]){
+                    var item2  = parseFloat(data[i+1][2]) //当前值
+                    if(item2-avg > 0){
+                        avgPoint++;
+                        // console.log(data[i],  avg,  data[i+1])
+                    }
+                }
+            }
+        }
+        return avgPoint;
+    }
+
+
+    (function($){
+        //插件
+        $.extend($,{
+            //命名空间
+            sortTable:{
+                sort:function(tableId,Idx){
+                    var table = document.getElementById(tableId);
+                    var tbody = table.tBodies[0];
+                    var tr = tbody.rows;
+                    var trValue = new Array();
+                    for (var i=0; i<tr.length; i++ ) {
+                        trValue[i] = tr[i];  //将表格中各行的信息存储在新建的数组中
+                    }
+
+                    if (tbody.sortCol == Idx) {
+                        trValue.reverse(); //如果该列已经进行排序过了，则直接对其反序排列
+                    } else {
+                        //trValue.sort(compareTrs(Idx));  //进行排序
+                        trValue.sort(function(tr1, tr2){
+                            //console.log(tr1,tr2)
+                            var value1 = tr1.cells[Idx].innerHTML;
+                            var value2 = tr2.cells[Idx].innerHTML;
+                            if(isNaN(value1) && isNaN(value1)){
+                                return value1.localeCompare(value2);
+                            }else{
+                                value1 = parseFloat(value1);
+                                value2 = parseFloat(value2);
+                                if(value1>value2){
+                                    return 1;
+                                }else if(value1 < value2){
+                                    return -1;
+                                }else{
+                                    return 0;
+                                }
+                            }
+                            // console.log(value1,value2,Idx)
+                            // if(Idx == 0 || Idx == 2 || Idx == 3 || Idx >=7){
+                            //     value1 = parseFloat(value1);
+                            //     value2 = parseFloat(value2);
+                            //     if(value1>value2){
+                            //         return 1;
+                            //     }else if(value1 < value2){
+                            //         return -1;
+                            //     }else{
+                            //         return 0;
+                            //     }
+                            // }else{
+                            //     return value1.localeCompare(value2);
+                            // }
+                        });
+                    }
+                    var fragment = document.createDocumentFragment();  //新建一个代码片段，用于保存排序后的结果
+                    for (var i=0; i<trValue.length; i++ ) {
+                        fragment.appendChild(trValue[i]);
+                    }
+                    tbody.appendChild(fragment); //将排序的结果替换掉之前的值
+                    tbody.sortCol = Idx;
+                }
+            }
+        });
+
+    })(jQuery);
+</script>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link type="text/css" rel="stylesheet" media="all" href="../../../assets/plugins/MUI/css/mui.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="../../../assets/plugins/MUI/css/mui.picker.min.css" />
+<!--    <link type="text/css" rel="stylesheet" media="all" href=".../../../assets/font/iconfont.css" />-->
+    <link type="text/css" rel="stylesheet" media="all" href="../../../assets/css/huixing.min.css" />
+    <!-- HTML5 shiv and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="../assets/plugins/fixIE/html5shiv.js"></script>
+    <script src="../assets/plugins/fixIE/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        table th, table td {
+            font-size: 12px;
+            text-align: center;
+            padding: 1px;
+        }
+    </style>
+</head>
+<body style="background-color: white">
+<header class="mui-bar mui-bar-nav">
+    <a class="mui-icon mui-icon-arrowleft mui-pull-left mui-action-back"  onclick="colseHtml()" ></a>
+    <h1 class="mui-title">股票信息监控</h1>
+</header>
+<!--<section class="box-space mui-bar mui-bar-tab footer-block-btn">-->
+<!--    <button type="button" class="mui-btn mui-btn-warning mui-btn-block" onclick="window.location.href='order-pay-bankcard.html'">立即支付 ￥360</button>-->
+<!--</section>-->
+<nav class="mui-bar mui-bar-tab">
+    <center>
+        <button type="button" onclick="colseHtml()" class="mui-btn mui-btn-warning">关闭窗口</button>
+        <button type="button" onclick="editData()" class="mui-btn mui-btn-primary">管理股票</button>
+        <button type="button" id="rbt" onclick="refresh()" class="mui-btn mui-btn-primary">1秒刷新</button>
+    </center>
+</nav>
+<article class="mui-content mui-scroll-wrapper">
+    <div class="mui-scroll">
+        <div id="versionDiv" style="height:500px;width:100%;overflow:auto;background:#EEEEEE;">
+            <form class="form-old">
+                <section>
+                    <ul class="mui-table-view list-radio" id="verserUl">
+                    </ul>
+                </section>
+            </form>
+            <br><br><br><br><br>
+        </div>
+    </div>
+</article>
+</body>
+<script type="text/javascript" src="../../../assets/plugins/jQuery/jquery-1.11.1/jquery.min.js"></script>
+<script type="text/javascript" src="../../../assets/plugins/MUI/js/mui.min.js"></script>
+<script type="text/javascript" src="../../../assets/plugins/MUI/js/mui.picker.min.js"></script>
+<!--<script type="text/javascript" src="../../../assets/js/commonTest.js"></script>-->
+<script type="text/javascript" src="../../../assets/plugins/layerMobile/layer.js"></script>
+<script type="text/javascript" src="../../js/view.js"></script>
+<script type="text/javascript" src="../../js/comm-work2.js"></script>
+<script type="text/javascript" src="BaseData.js"></script>
+<script type="text/javascript">
+
+
+    function runfun() {
+        var s= BaseData.getGuPiaoDataBaseData();
+        console.log("取得数据",s.data)
+        var keyArr = [];
+        for(k=0;k<s.data.length;k++){
+            keyArr.push("s_"+s.data[k].code)
+        }
+        console.log("url--------->", keyArr.join(","))
+        var url = "http://stock.gtimg.cn/data/index.php?appn=price&c=sh600103";
+        url = "https://qt.gtimg.cn/q=s_sh601328,s_sz002685";
+        url = "https://qt.gtimg.cn/q=" + keyArr.join(",");
+        // url = "https://q.stock.sohu.com/hisHq?code=cn_601766,cn_000002&start=20210101&end=20210312";
+        // 0: 未知
+        // 1: 股票名称
+        // 2: 股票代码
+        // 3: 当前价格
+        // 4: 涨跌
+        // 5: 涨跌%
+        // 6: 成交量（手）
+        // 7: 成交额（万）
+        // 8:
+        // 9: 总市值
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(result) {
+                // alert(result);
+                console.log("获取数据：", result)
+                var gparr = [];
+                var rs = result.split(";")
+                for(i=0;i<rs.length;i++){
+                    if(rs[i].length>3){
+                        var str = rs[i].split("\"")[1]
+                        console.log("原：" + str);
+                        var s_ = str.split("~");
+                        console.log(s_[1], s_[2], s_[3]);
+                        var cfg = getGuPiaoInfo(s.data, s_[2])
+                        gparr.push({
+                            price: s_[3] || 0,
+                            name:s_[1],
+                            //v: s[3] + '入4.63低4.44,'+s[5] ,
+                            code:cfg.code,
+                            min:cfg.min,
+                            max:cfg.max,
+                            in:cfg.in,
+                            out:cfg.out,
+                            zf:s_[5],
+                            info:""
+                        })
+                    }
+                }
+                // $("#editPlugs").val(result)
+                // console.log(JSON.parse( result))
+                console.log(gparr)
+                initHtml(gparr)
+
+                if(runIndex >= 2){
+                    window.setTimeout( function () {
+                        $("#rbt").text("刷新中("+ runIndex +")")
+                        runIndex ++;
+                        runfun();
+                    }, 1000)
+                }
+            }
+        });
+    }
+    window.onload = function(){
+        console.log("----------")
+        runfun();
+    }
+
+    function getGuPiaoInfo(cfg, code) {
+        console.log("getGuPiaoInfo-》》",cfg, code)
+        for(i=0;i<cfg.length;i++){
+            var code2 = cfg[i].code;
+            if(code2.endsWith(code)){
+                return cfg[i];
+            }
+        }
+        return {name: '-', code: '-', min: '0.00', max: '0.00', out: '0.00', in: '0.00'};
+    }
+
+    function getServerInfo(arr) {
+        return arr;
+    }
+
+    var runIndex = 1;
+    function refresh() {
+        $("#rbt").text("刷新中(1)")
+        if(runIndex == 1) {
+            runIndex = 2;
+            runfun()
+        }
+    }
+
+
+
+    function initHtml(arr) {
+        $("#versionDiv").height($(document).height())
+        var skey = localStorage.getItem(BaseData.getServerKey());
+        //console.log(skey)
+        //verserUl
+        var html =  "";
+        var index = 0;
+        var appInfo = getServerInfo(arr);
+        for(i in appInfo){
+            var id = "version_" + index++;
+            var ip = appInfo[i].v;
+            var checked = "";
+            if(skey == ip){
+                checked = " checked "
+            }
+
+            var color = "";
+            if(parseFloat(arr[i].zf) > 0){
+                color = " red "
+            }else if(parseFloat(arr[i].zf) < 0){
+                color = " green "
+            }
+
+            html += " <li class=\"mui-table-view-cell mui-radio\">\n" +
+                " <input name=\"radio\" "+ checked +" type=\"radio\">\n" +
+                " <dl>\n" +
+                " <dt>" +
+                // "<img src=\"../../../assets/images/payway/icon-yucun.png\" width=\"28\"/>" +
+                "<a id='icon_"+ id +"' class=\"mui-icon mui-icon-minus-filled\"></a>" +
+                // "<a class=\"mui-icon mui-icon-arrowright\"></a>" +
+                "<strong class=\"space-m-l\">"+  (appInfo[i].name || "") +"("+ arr[i].code +")</strong>" +
+                //"<span class=\"gray space-m-l\"  >"+ appInfo[i].v +"</span>" +
+                    " <TABLE style='font-size: 12px;' border='1'>\n" +
+                "  <TR>\n" +
+                "\t<TD>现价</TD>\n" +
+                "\t<TD>涨幅</TD>\n" +
+                "\t<TD>最低</TD>\n" +
+                "\t<TD>最高</TD>\n" +
+                "\t<TD>买入</TD>\n" +
+                "\t<TD>出手</TD>\n" +
+                "  </TR>\n" +
+                "  <TR>\n" +
+                "\t<TD style='color: "+ color +"'>"+ arr[i].price +"</TD>\n" +
+                "\t<TD style='color: "+ color +"'>"+ arr[i].zf +"</TD>\n" +
+                "\t<TD style='color: "+ color +"'>"+ arr[i].min +"</TD>\n" +
+                "\t<TD style='color: "+ color +"'>"+ arr[i].max +"</TD>\n" +
+                "\t<TD style='color: "+ color +"'>"+ arr[i].in +"</TD>\n" +
+                "\t<TD style='color: "+ color +"'>"+ arr[i].out +"</TD>\n" +
+                "  </TR>\n" +
+                "  </TABLE>" +
+                "</dt>\n" +
+                " </dl>\n" +
+                " </li>";
+        }
+        $("#verserUl").html(html);
+    }
+
+
+    function editData() {
+        var url = "plugs/plug-html/editJson3.html?key=GPDATA&backUrl=plugs/plug-html/guPiao.html"
+        openView({
+            vid:getViewVid(url),
+            url:url
+        })
+        notifyMe("sdafasdfd")
+    }
+
+
+</script>
+<script>
+
+    function notifyMe(info_) {
+        var info = info_ || "这是个消息"
+        // 检查浏览器是否支持 Notification
+        if (!("Notification" in window)) {
+            alert("你的不支持 Notification!  TAT");
+        }
+
+        // 检查用户是否已经允许使用通知
+        else if (Notification.permission === "granted") {
+            // 创建 Notification
+            var notification = new Notification("Hey guy!");
+            notification.iconurl = 'http://b3logfile.com/avatar/1450241301546-260.jpg?1451971807339';
+            autoClose(notification);
+
+        }
+
+        // 重新发起请求，让用户同意使用通知
+        else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+
+                // 用户同意使用通知
+                if (!('permission' in Notification)) {
+                    Notification.permission = permission;
+                }
+
+                if (permission === "granted") {
+                    // 创建 Notification
+                    var notification = new Notification("Hey guy!");
+                }
+            });
+        }
+
+        // 注意：如果浏览器禁止弹出任何通知，将无法使用
+    }
+
+    function autoClose(notification) {
+        if (typeof notification.time === 'undefined' || notification.time <= 0) {
+            notification.close();
+        } else {
+            setTimeout(function () {
+                notification.close();
+            }, notification.time);
+        }
+
+        notification.addEventListener('click', function () {
+            notification.close();
+        }, false)
+    }
+
+</script>
+
+</html>

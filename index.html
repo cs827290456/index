@@ -1,20 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <style>
+        body {
+            margin: 30px auto 0 auto;
+            font-size: 14px;
+            font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        / / background: #444;
+        }
+
+        #content {
+            text-align: center;
+            background: #fff;
+            padding: 2em;
+            height: 220px;
+            position: relative;
+            z-index: 2;
+            width: 360px;
+            line-height: 28px;
+        }
+
+        #about a {
+            color: #eee;
+        }
+
+        .logo {
+            text-align: center;
+        }
+        .welcome {
+            text-align: left;
+            margin: 20px 0;
+        }
+        .table-cls {
+            width: 100%;
+            border-collapse: collapse;
+            margin:auto;
+        }
+        .table-cls td {
+            padding: 5px 10px;
+            border: 1px solid #333;
+        }
+        .table-cls .title {
+            width: 100px;
+            text-align: right;
+        }
+        .table-cls .msg {
+            text-align: left;
+        }
+        .table-cls .base {
+            text-align: center;
+            font-weight:bold ;
+            background-color: #c3daf9;
+        }
+    </style>
 </head>
-<style>
-    .link-container a {
-        display: block;
-    }
-</style>
+
 <body>
-<div class="link-container">
-    <a href="https://cswbw.gitee.io/gp/html/plugs/plug-html/index.html">股价</a>
-    <a href="https://cswbw.gitee.io/gp/html/plugs/plug-html/btb.html">币市</a>
-    <a href="https://exmail.qq.com/">企业邮箱</a>
-    <a href="https://www.alipan.com/sign/in">阿里云盘</a>
+
+<div id="content">
+    <div class="logo">
+        <img src="img/ymd.png" alt="" width="160px">
+    </div>
+    <div class="welcome">欢迎进入官方御美朵多肽角蛋白焦发赋活霜，本产品为官方正品。感谢您使用本产品。</div>
+
+    <div style="text-align: center;">
+        <table class="table-cls">
+            <tr>
+                <td colspan="2" class="base">基础信息</td>
+            </tr>
+            <tr>
+                <td class="title">产品品牌</td>
+                <td class="msg">御美朵</td>
+            </tr>
+            <tr>
+                <td class="title">产品名称</td>
+                <td class="msg">多肽角蛋白焦发赋活霜</td>
+            </tr>
+            <tr>
+                <td class="title">产品功效</td>
+                <td class="msg">臻选多肽蛋白护发成分，针对日常及烫染后头发变干枯、毛躁等现象，滋润护理补水，蕴含多种植物精华，使头发有光泽。护理后令秀发水润亮泽、丝丝顺滑。
+                    注：焦发指干枯毛躁发，赋活指护理后赋予秀发水润活力。</td>
+            </tr>
+
+
+            <tr>
+                <td class="title">产品规格</td>
+                <td class="msg">3000g</td>
+            </tr>
+            <tr>
+                <td class="title">统一零售价</td>
+                <td class="msg">69.9元</td>
+            </tr>
+        </table>
+    </div>
+
 </div>
+
 </body>
 </html>

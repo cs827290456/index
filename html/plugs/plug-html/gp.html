@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"> -->
+	<script type="text/javascript" src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <!-- 支持弹框分析历史数据 -->
+    <link type="text/css" rel="stylesheet" media="all" href="../../layer_mobile/need/layer.css" />
+    <script type="text/javascript" src="../../../assets/plugins/layerMobile/layer.js"></script>
+ <style>
+        table{
+            border-collapse:collapse;
+            border-spacing:0;
+            border:1px solid;
+        }
+        td {
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body onload="runfun()">
+<pre style="margin-bottom: 0px">
+<span id="time" >【2023/3/30 15:12:01】(周4)</span>项目情况
+  某项目动态参数信息记录3.82[2600],3.71[2700][<span id="hj">...</span>]：</pre>
+<span id="data" style="font-size: 12px;"></span>
+</body>
+<script type="text/javascript">
+
+    //黄金   http://quote.eastmoney.com/globalfuture/AUTD.html?from=360
+    function jQueryHuangjing(info){
+        //console.log(info.qt.p)
+        $("#hj").html(info.qt.p);
+    }
+
+    //黄金
+    function getGold() {
+        $.ajax({
+            type: "GET",
+            url: 'https://futsseapi.eastmoney.com/static/118_AUTD_qt?callbackName=jQueryHuangjing&_=' + new Date().getTime(),
+            success: function(result) {
+                //console.log('获取数据成功')
+            }});
+    }
+
+
+	var showTitle = false;
+	var runIndex = 0;
+    function runfun() {
+        getGold();
+        var s = {
+            "data":[
+                {"name":"上证",code:"sh000001",myPrice: "3000"},
+				{"name":"招商",code:"sh600036",myPrice: "33.80"},
+			    {"name":"华东",code:"sz002685",myPrice: "3.82"},
+                {"name":"南京",code:"sh601009",myPrice: "9.00"},
+                {"name":"能建",code:"sh601868",myPrice: "2.40"},
+				{"name":"格力",code:"sz000651",myPrice: "36.00"},
+                {"name":"交通",code:"sh601328",myPrice: "4.70"},
+                {"name":"工商",code:"sh601398",myPrice: "4.30"},
+                {"name":"北京",code:"sh601169",myPrice: "4.30"},
+                {"name":"建设",code:"sh601939",myPrice: "5.50"},
+                {"name":"农业",code:"sh601288",myPrice: "2.88"},
+                {"name":"中国",code:"sh601988",myPrice: "3.10"},
+                {"name":"宁波",code:"sz002142",myPrice: "26.00"},
+                {"name":"杭州",code:"sh600926",myPrice: "10.00"},
+                {"name":"邮储",code:"sh601658",myPrice: "4.00"},
+                {"name":"常熟",code:"sh601128",myPrice: "7.00"},
+                {"name":"中信",code:"sh601998",myPrice: "4.50"},
+                {"name":"长沙",code:"sh601577",myPrice: "7.00"},
+                {"name":"宁波",code:"sz002142",myPrice: "23.00"},
+                {"name":"华夏",code:"sh600015",myPrice: "4.80"},
+                {"name":"光大",code:"sh601818",myPrice: "2.80"},
+                {"name":"中国",code:"sh601988",myPrice: "3.00"},
+                {"name":"苏州",code:"sz002966",myPrice: "6.28"},
+                {"name":"平安",code:"sz000001",myPrice: "11.28"},
+                {"name":"杭州",code:"sh600926",myPrice: "7.28"},
+                {"name":"江阴",code:"sz002807",myPrice: "3.80"},
+                {"name":"浦发",code:"sh600000",myPrice: "6.80"},
+                {"name":"交通",code:"sh601328",myPrice: "4.45"},
+                {"name":"无锡",code:"sh600908",myPrice: "4.90"},
+                {"name":"瑞丰",code:"sh601528",myPrice: "6.10"},
+                {"name":"苏农",code:"sh603323",myPrice: "4.38"},
+                {"name":"江苏",code:"sh600919",myPrice: "5.81"},
+                {"name":"兴业",code:"sh601166",myPrice: "16.00"},
+                {"name":"成都",code:"sh601838",myPrice: "11.00"},
+                {"name":"青岛",code:"sz002948",myPrice: "3.20"},
+
+            ]
+        };
+        var key_gp =  [];
+        var keyArr = [];
+        for(k=0;k<s.data.length;k++){
+            var code = s.data[k].code;
+            keyArr.push("s_"+ code)
+            var ks = s.data[k].code.substring(2,code.length)
+            key_gp[ks] = s.data[k].myPrice || 0;
+        }
+        var url = "https://qt.gtimg.cn/q=" + keyArr.join(",");
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(result) {
+                var arr = [];
+                var rs = result.split(";")
+                for(i=0;i<rs.length;i++){
+                    if(rs[i].length>3){
+                        var str = rs[i].split("\"")[1]
+                        var s_ = str.split("~");
+                        // console.log(s_)
+                        arr.push({
+                            myPrice: key_gp[s_[2]],
+                            code:s_[2],
+                            price: s_[3] || 0,
+                            name:s_[1],
+                            zf:s_[5],
+                        })
+                    }
+                }
+				var html =  "";
+                var table_html = "<table style='margin-left: 7px;' >";
+                for(i in arr){
+                    var c1 = "#ff0702"
+                    var c2 = "#0f1cff"
+					var color  =  parseFloat(arr[i].zf) > 0 ? c1  : (parseFloat(arr[i].zf) < 0 ? c2 : "" )
+					html += "<span >" + ( showTitle ? (arr[i].name + "-") : "") +"</span><span title='"+ arr[i].name +"' style='color: "+ color +"'>"+ arr[i].price +","+ arr[i].zf +",</span>";
+
+                    table_html+= "<tr title='"+ arr[i].name +"'>"
+                    table_html+= "<td style='cursor: pointer' onclick=showHistory('"+ arr[i].code +"')>"+ (parseInt(i)+1)  +  "</td>"
+                    table_html+= "<td>"+ arr[i].price + "</td>"
+                    table_html+= "<td>"+ arr[i].zf + "</td>"
+                    // table_html+= "<td style='color: "+ color +"'>●</td>"
+
+                    var color2  = "";
+                    if(parseFloat(arr[i].price) > parseFloat(arr[i].myPrice)){
+                        color2 = "rgba(32,32,32,0.98)"
+                    }else {
+                        color2 = "red"
+                    }
+                    table_html+= "<td  style='color: "+ color2 +"'>"+ arr[i].myPrice + "</td>"
+                    table_html+= "<td  style='color: "+ color2 +"'>"+ (arr[i].price-arr[i].myPrice).toFixed(2) + "</td>"
+                    // table_html+= "<td style='color: "+ color2 +"'>●</td>"
+                    table_html+= "</tr>"
+				}
+                table_html+= "</table>"
+
+				$("#data").html(table_html);
+				window.setTimeout(function () {
+					runIndex ++
+                    //var myDate = new Date()
+
+                    var now = new Date();
+                    var nowTime = now.toLocaleString();
+                    var date = nowTime.substring(0,10);//截取日期
+                    var time = nowTime.substring(10,20); //截取时间
+                    var week = now.getDay(); //星期
+
+                    var timeInfo ="【"+ date + "" + time + "】(周" + week+")";
+                    //console.log(timeInfo);
+
+                   // var txt =  "." + myDate.getHours() + "." + myDate.getMinutes() + ".";
+                    var txt = runIndex%3==0 ? "1" : ( runIndex%3==1 ? "2" : "3")
+					// $("#msg").text(txt)
+                    $("#time").text(timeInfo)
+					runfun();
+				}, 1000)
+
+            }
+        });
+    }
+
+    function showHistory(code) {
+     var html ="<iframe height='600px' width='1000px' src='guPiao-comm.html?code="+ code +"'>";
+     layer.open({
+      type: 3,
+      area:["500px","400px"],
+      content: html
+     });
+    }
+
+
+    function aGuInfo() {
+     var url = "https://gateway.jrj.com/quot-feed/hqs";
+     $.ajax({
+      type: "POST",
+      data:{
+       env:[1,2,4],
+       stocks:[1000001, 2399001, 2399006, 1000688]
+      },
+      dataType: 'json',
+      url: url,
+      success: function(result) {
+        console.log(result)
+      }
+     })
+    }
+
+
+    function aGuInfo2() {
+     var url = "https://www.eastmoney.com/";
+     url = "https://quotes.sina.cn/hs/company/quotes/view/sh000002?autocallup=no&isfromsina=no";
+     url = "http://quote.eastmoney.com/center/hszs.html";
+     url = "http://quote.eastmoney.com/zs000001.html";
+     $.ajax({
+      type: "get",
+      url: url,
+      success: function(result) {
+       console.log(result)
+      }
+     })
+    }
+
+
+</script>
+</html>
+

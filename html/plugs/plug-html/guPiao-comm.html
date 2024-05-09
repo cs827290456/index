@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script type="text/javascript" src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://lib.baomitu.com/echarts/4.7.0/echarts.min.js"></script>
+</head>
+<style>
+    input{
+        margin-top: 5px;
+    }
+    /*
+
+    chrome启动方式增加如下参数
+    "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir=C:\MyChromeDevUserData --proxy-server=192.168.1.14:10809
+    */
+</style>
+<body >
+<span id="gp">
+</span>
+<!--<span id="data"></span>-->
+<div style="padding-top: 10px;width: 100px;position: fixed;top:0px;right:0px;float: left">
+    <input type="button" onclick="showChart(false)" value="关闭图表">
+    <input type="button" onclick="showChart(true)" value="显示图表">
+    <input type="button" onclick="showChartDate(30*1, this)" value="近1月">
+    <input type="button" onclick="showChartDate(30*2, this)" value="近2月">
+    <input type="button" onclick="showChartDate(30*3, this)" value="近3月">
+    <input type="button" onclick="showChartDate(30*6, this)" value="近6月">
+    <input type="button" onclick="showChartDate(30*9, this)" value="近9月">
+    <input type="button" onclick="showChartDate(365*1, this)" value="近1年">
+    <input type="button" onclick="showChartDate(365*2, this)" value="近2年">
+    <input type="button" onclick="showChartDate(365*3, this)" value="近3年">
+    <input type="button" onclick="showChartDate(365*4, this)" value="近4年">
+    <input type="button" id="btn"  onclick="showChartDate(365*5, this)" value="近5年">
+    <input type="button" onclick="showChartDate(365*10, this)" value="近10年">
+    <input type="button" onclick="showChartDate(365*30, this)" value="近30年">
+    <br><span id="msg" onclick='showTitle=!showTitle'>.</span>
+</body>
+</div>
+<script type="text/javascript">
+
+    /*
+        算法贯穿平均的次数，越多则表示购买率越大，分成按数据可分成若干组
+        具体算法是
+    */
+
+
+    var code = location.href.toString().split("code=")[1] || "000000";
+    var type = code.substring(0,1);
+    if(type == "6"){
+        code = "sh" + code;
+    }else if(type == "0"){
+        code = "sz" + code;
+    }
+    console.log("code=" + code)
+    var showTitle = true;
+    var runIndex = 0;
+    var gpxx = [];
+    var avgArr = [];//平均股票信息
+    var avgInfo = "";
+    var s = {
+        "data":[
+            {"name":"..",code:code},
+        ]
+    };
+
+    function showChart(type){
+        if(type){
+            gpChart();
+            showTitle = true;
+        }else{
+            showTitle = false;
+            $(".chart").hide();
+        }
+    }
+
+    function showChartDate(day,btn) {
+        // console.log(btn.value)
+        avgInfo = btn.value;
+        // console.log(btn)
+        var end = getBeforeDate(0)
+        var start =  getBeforeDate(day);
+        gpChart(start,end);
+    }
+
+    function getBeforeDate(n){
+        var n = n;
+        var d = new Date();
+        var year = d.getFullYear();
+        var mon=d.getMonth()+1;
+        var day=d.getDate();
+        if(day <= n){
+            if(mon>1) {
+                mon=mon-1;
+            }
+            else {
+                year = year-1;
+                mon = 12;
+            }
+        }
+        d.setDate(d.getDate()-n);
+        year = d.getFullYear();
+        mon=d.getMonth()+1;
+        day=d.getDate();
+        // var s = year+"-"+(mon<10?('0'+mon):mon)+"-"+(day<10?('0'+day):day);
+        var s = year+""+(mon<10?('0'+mon):mon)+""+(day<10?('0'+day):day);
+        return s;
+    }
+
+    function ininTable() {
+        var html = "<table border='0'>";
+        for (var i=0;i<s.data.length;i++){
+            var item = s.data[i];
+            var code = item.code.substring(2, item.code.length)
+            html += "<tr>"
+            html += "<td>"
+            html += "<span id='gp_"+ code +"'>...</span>";
+            html += ",穿透率:<span id='point'></span>";
+            html += "</td>"
+            html += "<tr>"
+            html += "</tr>"
+            html += "<td>"
+            html += '<div class="chart" id=\"cn_'+ code +'\" style=\"width: 900px;height:550px\;display: none"></div>'
+            html += "</td>"
+            html += "</tr>"
+        }
+        html +="</table>"
+        $("#gp").html(html);
+    }
+
+    function getGuPiaoInfo(code) {
+        // console.log(s.data.length)
+        for(i=0;i<s.data.length;i++){
+            var code2 = s.data[i].code;
+            // console.log(code, code2)
+            if(code2.indexOf(code) != -1){
+                return s.data[i];
+            }
+        }
+        return {};
+    }
+
+    window.onload = function () {
+        ininTable();
+        runfun()
+        document.getElementById("btn").click();
+    }
+
+    function runfun() {
+        var keyArr = [];
+        for(k=0;k<s.data.length;k++){
+            keyArr.push("s_"+s.data[k].code)
+        }
+        var url = "https://qt.gtimg.cn/q=" + keyArr.join(",");
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(result) {
+                var arr = [];
+                var rs = result.split(";")
+                for(i=0;i<rs.length;i++){
+                    if(rs[i].length>3){
+                        var str = rs[i].split("\"")[1]
+                        var s_ = str.split("~");
+                        //console.log(s_[1], s_[2], s_[3]);
+                        // arr.push({
+                        //     price: s_[3] || 0,
+                        //     name:s_[1],
+                        //     zf:s_[5],
+                        //     code: s_[2]
+                        // })
+                        var zf = s_[5];
+                        var html = "";
+                        var name = s_[1];
+                        var price = s_[3] || 0;
+                        var code = s_[2];
+                        var color = parseFloat(zf) > 0 ? " red "  : (parseFloat(zf) < 0 ? " green " : "" )
+                        // console.log(code)
+                        var html = ""
+                        if(avgArr.length == 0){
+                            html += ""
+                        }else if(price < avgArr[code]){
+                            html += "【安全】";
+                        }else{
+                            html +=  "【风险】";
+                        }
+                        var desc = getGuPiaoInfo(code);
+                        // console.log(desc, code)
+                        desc = desc.desc ? "("+ desc.desc +")" : "";
+                        html += "<span >" + ( showTitle ? (name + "-") : "") +"</span><span title='"+ name +"' style='color: "+ color +"'>"+ price + "|"+ zf  + "</span>" + desc;
+                        $("#gp_" + code).html(html)
+
+                    }
+                }
+                // gpxx = arr;
+                // var html =  "";
+                // for(i in arr){
+                //     var color = parseFloat(arr[i].zf) > 0 ? " red "  : (parseFloat(arr[i].zf) < 0 ? " green " : "" )
+                //     html += "<span >" + ( showTitle ? (arr[i].name + "-") : "") +"</span><span title='"+ arr[i].name +"' style='color: "+ color +"'>"+ arr[i].price +"|"+ arr[i].zf +"</span><br>";
+                // }
+                // $("#data").html(html);
+                // window.setTimeout(function () {
+                //     runIndex ++
+                //     $("#msg").text(runIndex%3==0 ? "." : ( runIndex%3==1 ? ".." : "..."))
+                //     runfun();
+                // }, 1000)
+            }
+        });
+    }
+
+    //// url = "https://q.stock.sohu.com/hisHq?code=cn_601766,cn_000002&start=20210101&end=20210312";
+    // 0: 未知
+    // 1: 股票名称
+    // 2: 股票代码
+    // 3: 当前价格
+    // 4: 涨跌
+    // 5: 涨跌%
+    // 6: 成交量（手）
+    // 7: 成交额（万）
+    // 8:
+    // 9: 总市值  sz
+    function gpChart(start, end) {
+        var start = start || getBeforeDate(365);
+        var end = end || getBeforeDate(0);
+        var html = "";
+        for(k=0;k<s.data.length;k++){
+            //keyArr.push("s_"+s.data[k].code)
+            var code = s.data[k].code
+            code = code.substring(2,code.length)
+            html+= '<div id="cn_'+ code +'" style="width: 650px;height:200px"></div>'
+        }
+        //
+        $("#chart").html(html);
+        for(k=0;k<s.data.length;k++){
+            var code = s.data[k].code
+            code = code.substring(2,code.length)
+            //https://q.stock.sohu.com/hisHq?code=cn_000651&start=20220310&end=20230310
+            //https://q.stock.sohu.com/hisHq?code=cn_601328&start=20230309&end=20220314
+            // var url1 = "https://q.stock.sohu.com/hisHq?code=cn_"+ code +"&start=20220310&end=20230310"
+            var url1 = "https://q.stock.sohu.com/hisHq?code=cn_"+ code +"&start="+ start +"&end="+ end;
+            // console.log(url1)
+            $.ajax({
+                type: "GET",
+                url: url1,
+                success: function (result) {
+                    var json = JSON.parse(result)
+                    console.log(json)
+                    console.log(JSON.stringify(json))
+                    var rq = [];
+                    var data = [];
+                    var arr = json[0].hq;
+                    var code = json[0].code;
+                    var sum = 0;
+                    for (var i=0;i<arr.length;i++){
+                        rq[i] = arr[i][0]
+                        data[i] = arr[i][2]
+                        sum += parseFloat(arr[i][2]);
+                    }
+                    var avg = sum/arr.length;
+                    avgArr[code.substring(3,code.length)] = avg;
+                    // console.log(sum +",");
+                    // console.log(rq);
+                    // console.log(data)
+
+                    var point = getPoint(arr);
+                    $("#point").html("穿透"+point + "次")
+                    var myChart = echarts.init(document.getElementById(code));
+                    var option = {
+                        // title: {
+                        //     text: getGuPiaoName(code) + '\n平均:' + avg,
+                        //     textStyle:{
+                        //         fontSize:12
+                        //     }
+                        // },
+                        tooltip: {
+                            // show: false
+                        },
+                        // legend: {
+                        //     data: ['销量'],
+                        //     tooltip: {
+                        //         show: false
+                        //     }
+                        // },
+                        xAxis: {
+                            data: rq.reverse(),//['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+                        },
+                        grid: {
+                            x: 30,
+                            y: 25,
+                            x2: 25,
+                            y2: 25
+                        },
+                        yAxis: {},
+                        series: [
+                            {
+                                name: '价格',
+                                type: 'bar',
+                                markLine : {
+                                    data : [
+                                        {type :'average', name: '平均值'}
+                                    ],
+                                    symbol: ['none', 'none'],
+                                    position:"insideTopCenter",
+                                    itemStyle:{
+                                        normal:{
+                                            lineStyle:{
+                                                type:'dotted',
+                                                color:'#ff0702'
+                                            },
+                                            label:{
+                                                show:true,
+                                                position:'middle',
+                                                formatter: avgInfo + "平均 : "+ avg,
+                                            }
+                                        }
+                                    },
+                                    large:true,
+                                    effect:{
+                                        show: false,
+                                        loop: true,
+                                        period: 0,
+                                        scaleSize : 2,
+                                        color : null,
+                                        shadowColor : null,
+                                        shadowBlur : null
+                                    },
+                                },
+                                itemStyle:{
+                                    color:"rgba(32,32,32,0.93)"
+                                },
+                                data: data.reverse()//[5, 20, 36, 10, 10, 20]
+                            }
+                        ]
+                    };
+                    myChart.setOption(option);
+                }
+            })
+        }
+        $(".chart").show();
+    }
+    //推荐信息：当前股票小于平均就推荐购买
+    var data = [
+            ["2023-03-27","2.36","2.33","-0.03","-1.27%","2.33","2.37","358856","8405.85","0.59%"],
+            ["2023-03-24","2.37","2.36","0.00","0.00%","2.35","2.37","275608","6510.60","0.45%"],
+            ["2023-03-23","2.36","2.36","0.00","0.00%","2.35","2.37","157807","3730.22","0.26%"],
+            ["2023-03-22","2.36","2.36","0.01","0.43%","2.35","2.37","210673","4980.18","0.35%"],
+            ["2023-03-21","2.35","2.35","0.00","0.00%","2.35","2.36","178183","4194.59","0.29%"],
+            ["2023-03-20","2.37","2.35","-0.01","-0.42%","2.34","2.38","335041","7911.26","0.55%"],
+            ["2023-03-17","2.37","2.36","0.01","0.43%","2.35","2.38","398102","9426.09","0.65%"],
+            ["2023-03-16","2.34","2.35","0.00","0.00%","2.34","2.38","464955","10969.92","0.76%"],
+            ["2023-03-15","2.35","2.35","0.02","0.86%","2.34","2.36","268712","6320.78","0.44%"],
+            ["2023-03-14","2.37","2.33","-0.04","-1.69%","2.33","2.37","426366","10004.28","0.70%"],
+            ["2023-03-13","2.38","2.37","-0.02","-0.84%","2.36","2.40","442610","10519.93","0.73%"],
+            ["2023-03-10","2.42","2.39","-0.04","-1.65%","2.38","2.43","472055","11336.28","0.78%"],
+            ["2023-03-09","2.43","2.43","0.01","0.41%","2.42","2.44","357183","8678.64","0.59%"],
+            ["2023-03-08","2.43","2.42","-0.01","-0.41%","2.40","2.44","595593","14397.60","0.98%"],
+            ["2023-03-07","2.42","2.43","0.01","0.41%","2.41","2.48","927422","22729.99","1.52%"],
+            ["2023-03-06","2.45","2.42","-0.02","-0.82%","2.41","2.45","376052","9140.22","0.62%"],
+            ["2023-03-03","2.43","2.44","0.01","0.41%","2.42","2.45","448063","10896.42","0.74%"],
+            ["2023-03-02","2.42","2.43","0.01","0.41%","2.41","2.43","401970","9725.69","0.66%"],
+            ["2023-03-01","2.40","2.42","0.02","0.83%","2.39","2.42","326277","7853.23","0.54%"],
+            ["2023-02-28","2.39","2.40","0.02","0.84%","2.38","2.40","209877","5014.80","0.34%"],
+            ["2023-02-27","2.41","2.38","-0.03","-1.24%","2.37","2.42","636261","15222.28","1.05%"],
+            ["2023-02-27","2.37","2.38","-0.03","-1.24%","2.37","2.42","636261","15222.28","1.05%"],
+            ["2023-02-27","2.41","2.38","-0.03","-1.24%","2.37","2.42","636261","15222.28","1.05%"],
+            ["2023-02-27","2.37","2.38","-0.03","-1.24%","2.37","2.42","636261","15222.28","1.05%"],
+            ["2023-02-27","2.41","2.38","-0.03","-1.24%","2.37","2.42","636261","15222.28","1.05%"]
+        ]
+
+    function getPoint(data){
+        var size = data.length;
+        var sum = 0;
+        for(var i=0;i<size;i++){
+            var item = parseFloat(data[i][2]) //当前值
+            sum += item;
+            //console.log(item)
+        }
+        var avg = sum/size;//平均数
+        //有多少次经过平均数
+        var avgPoint = 0;
+        for(var i=0;i<size;i++){
+            var item1 = parseFloat(data[i][2]) //当前值
+            var v1 = item1-avg
+            if(v1 > 0){
+                if(data[i+1]){
+                    var item2  = parseFloat(data[i+1][2]) //当前值
+                    if(item2-avg < 0){
+                        avgPoint++;
+                        //console.log(data[i],  avg,  data[i+1])
+                    }
+                }
+            }
+            if(v1 < 0){
+                if(data[i+1]){
+                    var item2  = parseFloat(data[i+1][2]) //当前值
+                    if(item2-avg > 0){
+                        avgPoint++;
+                        //console.log(data[i],  avg,  data[i+1])
+                    }
+                }
+            }
+        }
+        return avgPoint;
+    }
+    //console.log(getPoint(data))
+</script>
+</html>
