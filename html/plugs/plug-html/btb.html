@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title>币市情况</title>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <a href="index.html">股票</a>
+    <div id="app">
+    </div>
+    <!-- built files will be auto injected -->
+
+
+   <script>
+
+       function coinPrice() {
+           if ("WebSocket" in window) {
+               //https://www.528btc.com/coin/
+               var allb = [];
+               allb["1"] = "BTC比特币";
+               allb["2"] = "ETH以太坊";
+               // allb["3"] = "USDT泰达币";
+               allb["4"] = "BNB币安币";
+               //allb["16"] = "WBTC";
+               allb["7"] = "SOL";
+               allb["352"] = "USDC";
+               allb["5"] = "XRP瑞波币";
+               allb["372"] = "TON";
+               allb["8"] = "DOGE狗狗币";
+               // allb["11"] = "ADA艾达币";
+               allb["13"] = "SHIB柴犬币";
+               allb["19"] = "OKBOK币";
+               // allb["16"] = "BCH比特现金";
+
+               var html = "<table border='1'>";
+               html += "<td>名称</td><td>人民币</td><td>美元</td><td>涨幅</td>"
+               for (x in allb){
+                   html += "<tr>"
+                   html += "<td>"+ allb[x] +"</td><td id='rmb_"+ x +"'>...</td><td id='my_"+ x +"'>...</td><td id='zf_"+ x +"'>...</td>"
+                   html += "</tr>"
+               }
+               html += "</table>"
+               document.getElementById("app").innerHTML = html;
+
+
+               let ws = new WebSocket("wss://api.lianpucom.com/xhj-gather-app/open/websocket/ticker-cny-all");
+               ws.onmessage = function (evt) {
+                   let data = JSON.parse(evt.data);
+
+                   if(data[3] == 5) {
+                       console.log(data)
+                   }
+
+                   let rateCny = 7.2366;
+                   let priceCny = price_show(data[0] * rateCny);
+                   let priceUsd = price_show(data[0]);
+
+                   let rmb = document.getElementById("rmb_" + data[3]);
+                   if(rmb) {
+                       rmb.innerHTML = data[1];
+                       // rmb.innerHTML = priceCny
+                   }
+                   let my = document.getElementById("my_" + data[3]);
+                   if(my) {
+                       my.innerHTML = data[0];
+                       // my.innerHTML = priceUsd;
+                   }
+                   let zf = document.getElementById("zf_" + data[3]);
+                   if(zf) {
+                       zf.innerHTML = data[2];
+                   }
+                   // if (row) {
+                   //     var tds = row.getElementsByTagName('td');
+
+                   //     let changeClassName = data[2] > 0 ? "rise" : "fall";
+                   //     let changBgClassName = data[2] > 0 ? "green_bg" : "red_bg";
+                   //     let add = data[2] > 0 ? "+" : "";
+                   //     tds[2].textContent = '￥' + priceCny;
+                   //     tds[3].textContent = '$' + priceUsd;
+                   //     tds[4].innerHTML = '<div class="' + changeClassName + '">' + add + data[2] + '%</div>';
+                   //     tds[9].className = 'qjtd ' + changBgClassName;
+                   //     setTimeout(function() {
+                   //         tds[9].className = 'qjtd'
+                   //     }, 2000);
+                   //
+                   // }
+               };
+           }
+       }
+
+       function price_show(number) {
+           if (number > 1) {
+               number = formatNumber(number, 2);
+           } else {
+               if (number > 0.0001) {
+                   number = formatNumber(number, 5);
+               } else if (number < 0.000000001) {
+                   number = formatNumber(number, 11);
+               } else {
+                   number = formatNumber(number, 7);
+               }
+           }
+           return number;
+       }
+
+       function formatNumber(number, decimalPlaces) {
+           return number.toLocaleString(undefined, {
+               minimumFractionDigits: decimalPlaces,
+               maximumFractionDigits: decimalPlaces
+           });
+       }
+
+       coinPrice();
+
+   </script>
+  </body>
+</html>
