@@ -56,7 +56,6 @@
             type: "GET",
             url: 'http://www.qiyoujiage.com?callbackName=jQueryHuangjing&_=' + new Date().getTime(),
             success: function(result) {
-                //console.log('result' + result)
                 try {
                     var parser = new DOMParser();
                     var doc = parser.parseFromString(result, 'text/html');
@@ -75,7 +74,6 @@
             getErrorInfo()
         }
     }
-
     function getErrorInfo() {
         document.getElementById("petrol").innerHTML = "获取失败 <span style='color: red' onclick='showPetrolInfo()' href='http://www.qiyoujiage.com'>查看详情</span>"
     }
