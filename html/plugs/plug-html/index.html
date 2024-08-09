@@ -26,13 +26,9 @@
 <a href="btb.html">币市情况</a>
 
 <br>
-时间：<span id="time" >【2023/3/30 15:12:01】</span>
+时间：<span id="time" >【2023/3/30 15:12:01】</span>,实时黄金：<span id="hj">黄金信息获取中...</span>
 <br>
 油价：<span id="petrol" >汽油信息获取中..</span>
-<br>
-黄金：<span id="hj">黄金信息获取中...</span>
-<br>
-股票：
 <br>
 <span id="data" style="font-size: 12px;"></span>
 </body>
@@ -66,16 +62,23 @@
                     var parser = new DOMParser();
                     var doc = parser.parseFromString(result, 'text/html');
                     //var div = doc.querySelector('div');
-                    var div = doc.getElementById("rightTop").children[3].innerText.split("微信扫描二维码")[0];
+                    var div = doc.getElementById("rightTop").children[3].innerText.split("微信扫描二维码")[0].replace("大家相互转告油价大跌中","").replace("，","").replace("。","");
                     console.log(div)
                     document.getElementById("petrol").innerHTML = div
                 }catch (e) {
-                    document.getElementById("petrol").innerHTML = "获取汽油失败"
+                    getErrorInfo()
                 }
-            }});
+            },error:function (e) {
+                getErrorInfo()
+            }
+        });
          }catch (e) {
-            document.getElementById("petrol").innerHTML = "获取汽油失败"
+            getErrorInfo()
         }
+    }
+
+    function getErrorInfo() {
+        document.getElementById("petrol").innerHTML = "获取失败 <span style='color: red' onclick='showPetrolInfo()' href='http://www.qiyoujiage.com'>查看详情</span>"
     }
 
     function initHtml() {
@@ -207,6 +210,16 @@
             }
         });
     }
+
+    function showPetrolInfo(code) {
+        var html ="<iframe height='600px' width='1000px' src='http://www.qiyoujiage.com?code="+ code +"'>";
+        layer.open({
+            type: 3,
+            area:["500px","400px"],
+            content: html
+        });
+    }
+
 
     function showHistory(code) {
      var html ="<iframe height='600px' width='1000px' src='guPiao-comm.html?code="+ code +"'>";
