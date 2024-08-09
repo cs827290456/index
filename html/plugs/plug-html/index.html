@@ -61,7 +61,7 @@
                     var parser = new DOMParser();
                     var doc = parser.parseFromString(result, 'text/html');
                     //var div = doc.querySelector('div');
-                    var div = doc.getElementById("rightTop").children[3].innerText.split("微信扫描二维码")[0].replace("大家相互转告油价大跌中","").replace("，","").replace("。","");
+                    var div = doc.getElementById("left").children[0].innerText.split("微信扫描右侧二维码")[0].replace("document.writeln(\"","").replace("，大家相互转告油价大跌中。","");
                     console.log(div)
                     document.getElementById("petrol").innerHTML = div
                 }catch (e) {
