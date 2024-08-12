@@ -24,7 +24,7 @@
 <body onload="initHtml()">
 <a href="https://cs827290456.github.io/index/">首页</a>
 <a href="btb.html">币市情况</a>
-
+<a style="cursor: pointer" onclick="fx()">股票分析</a>
 <br>
 时间：<span id="time" >【2023/3/30 15:12:01】</span>,实时黄金：<span id="hj">黄金信息获取中...</span>
 <br>
@@ -205,6 +205,16 @@
 				}, 1000)
 
             }
+        });
+    }
+
+
+    function fx(code) {
+        var html ="<iframe height='700px' width='1400px' src='https://cs827290456.github.io/index/html/plugs/plug-html/guPiao4.html?"+ code +"'>";
+        layer.open({
+            type: 3,
+            area:["90%","90%"],
+            content: html
         });
     }
 
