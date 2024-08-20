@@ -19,16 +19,60 @@
         td {
             border: 1px solid;
         }
+        .send {
+            color: red;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body onload="initHtml()">
+
+<a href="#" onclick="location.reload()">刷新</a>
+<!--<a href="#" onclick="doSomething()">测试</a>-->
+<script>
+    var senDuser = [
+        "周礼",
+        "wbw-017",
+        "文件传输助手",
+        "3+3=6"
+    ];
+    function getSendUserList() {
+        var checkedValues = [];
+        $("input[type='checkbox']").each(function () {
+            if ($(this).is(':checked')) {
+                checkedValues.push($(this).val());
+            }
+        });
+        //console.log(checkedValues);
+        return checkedValues;
+    }
+</script>
+<SCRIPT LANGUAGE="JavaScript">
+    <!--
+    doSomething = async(whoList, info) => {
+        for(var i=0;i<whoList.length;i++){
+            console.log("------who--->" + whoList[i])
+            var result = await aardio.sendWxInfo(whoList[i], info);
+            console.log(result)
+        }
+    };
+
+    function sendInfo(id) {
+        var whoList = getSendUserList();
+        doSomething(whoList, "消息 :"+ document.getElementById(id).innerText)
+    }
+    //-->
+</SCRIPT>
+
 <a href="https://cs827290456.github.io/index/">首页</a>
 <a href="btb.html">币市情况</a>
 <a style="cursor: pointer" onclick="fx()">股票分析</a>
 <br>
-时间：<span id="time" >【2023/3/30 15:12:01】</span>,实时黄金：<span id="hj">黄金信息获取中...</span>
+通知：<span id="userInfo"></span>
 <br>
-油价：<span id="petrol" >汽油信息获取中..</span>
+<span class="send" onclick="sendInfo('hj')">时间</span>：<span id="time" >【2023/3/30 15:12:01】</span>,<span id="hj">实时黄金：黄金信息获取中...</span>
+<br>
+<span class="send" onclick="sendInfo('petrol')">油价</span>：<span id="petrol" >汽油信息获取中..</span>
 <br>
 <span id="data" style="font-size: 12px;"></span>
 </body>
@@ -36,8 +80,7 @@
 
     //黄金   http://quote.eastmoney.com/globalfuture/AUTD.html?from=360
     function jQueryHuangjing(info){
-        //console.log(info.qt.p)
-        $("#hj").html(info.qt.p);
+        $("#hj").html("实时黄金："+info.qt.p);
     }
 
     //黄金
@@ -79,6 +122,12 @@
     }
 
     function initHtml() {
+        var userHtml = ""
+        for (var i=0;i<senDuser.length;i++){
+            var id = "su_"+ i;
+            userHtml += "<input class='sendUser' id='"+ id +"' type='checkbox' value='"+ senDuser[i] +"'><label style='cursor: pointer;margin-right: 20px' for='"+ id +"'>" + senDuser[i] +"</label>";
+        }
+        document.getElementById('userInfo').innerHTML = userHtml;
         getPetrol();
         runfun();
     }
@@ -178,7 +227,7 @@
                     }
                     table_html+= "<td  style='color: "+ color2 +"'>"+ arr[i].myPrice + "</td>"
                     table_html+= "<td  style='color: "+ color2 +"'>"+ (arr[i].price-arr[i].myPrice).toFixed(2) + "</td>"
-                    // table_html+= "<td style='color: "+ color2 +"'>●</td>"
+                    table_html+= "<td> <span class='send' onclick=sendInfo('gp_"+ i +"') > 发送微信 </span> <span id='gp_"+ i +"' style='display: none' >【" + arr[i].name +"】当前价格:"+arr[i].price+",涨幅:"+ arr[i].zf+"%"+"</span> </td>"
                     table_html+= "</tr>"
 				}
                 table_html+= "</table>"
@@ -254,7 +303,6 @@
      })
     }
 
-
     function aGuInfo2() {
      var url = "https://www.eastmoney.com/";
      url = "https://quotes.sina.cn/hs/company/quotes/view/sh000002?autocallup=no&isfromsina=no";
@@ -268,7 +316,6 @@
       }
      })
     }
-
 
 </script>
 </html>
