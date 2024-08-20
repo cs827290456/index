@@ -60,6 +60,10 @@
 
     function sendInfo(id) {
         var whoList = getSendUserList();
+        if(whoList.length <= 0){
+            alert("请选择需要通知的人！！！")
+            return;
+        }
         doSomething(whoList, "消息 :"+ document.getElementById(id).innerText)
     }
     //-->
