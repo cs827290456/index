@@ -16,13 +16,16 @@
             border-spacing:0;
             border:1px solid;
         }
+
         td {
             border: 1px solid;
         }
+
         .send {
             color: red;
             cursor: pointer;
         }
+
         .top-div {
             position: fixed; /* 设置固定定位 */
             top: 95px; /* 距离顶部0像素 */
@@ -36,7 +39,6 @@
     </style>
 </head>
 <body onload="initHtml()">
-
 <div class="top-div">
     ----发送信息情况----
     <span id="sendInfoSpan">
@@ -72,7 +74,7 @@
         "3+3=6",
         "巴途"
     ];
-    function getSendUserList() {
+    function getSendUserList() {   //getSendUserList
         var checkedValues = [];
         $("input[type='checkbox']").each(function () {
             if ($(this).is(':checked')) {
@@ -185,12 +187,23 @@
     }
 
     function initHtml() {
-        var userHtml = ""
-        for (var i=0;i<senDuser.length;i++){
-            var id = "su_"+ i;
-            userHtml += "<input class='sendUser' id='"+ id +"' type='checkbox' value='"+ senDuser[i] +"'><label style='cursor: pointer;margin-right: 20px' for='"+ id +"'>" + senDuser[i] +"</label>";
-        }
-        document.getElementById('userInfo').innerHTML = userHtml;
+
+        (async() => {
+            await aardio.getSendUserList().then(res=>{
+                console.log("----getSendUserList--->>>",res);
+                res = JSON.parse(unescape(res))
+                console.log("----getSendUserList--->>>",res);
+                var userHtml = ""
+                for (var i=0;i<res.length;i++){
+                    var id = "su_"+ i;
+                    var value = res[i]
+                    userHtml += "<input class='sendUser' id='"+ id +"' type='checkbox' value='"+ value +"'><label style='cursor: pointer;margin-right: 20px' for='"+ id +"'>" + value +"</label>";
+                }
+                document.getElementById('userInfo').innerHTML = userHtml;
+            });
+        })();
+
+
         getPetrol();
         runfun();
     }
