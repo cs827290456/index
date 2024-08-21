@@ -23,19 +23,56 @@
             color: red;
             cursor: pointer;
         }
+        .top-div {
+            position: fixed; /* 设置固定定位 */
+            top: 95px; /* 距离顶部0像素 */
+            right: 0; /* 距离左侧0像素 */
+            width: 50%; /* 宽度为100% */
+            /*background-color: #333; !* 背景颜色 *!*/
+            color: #2d3237; /* 字体颜色 */
+            text-align: center; /* 文本居中 */
+            z-index: 1000; /* 确保div在最上层 */
+        }
     </style>
 </head>
 <body onload="initHtml()">
 
+<div class="top-div">
+    发送信息情况
+    <span id="sendInfoSpan">
+    </span>
+</div>
+
 <a href="#" onclick="location.reload()">刷新</a>
-<!--<a href="#" onclick="doSomething()">测试</a>-->
+<a href="#" onclick="testJavaFun()">测试</a>
+
 <script>
+    var sendInfoList = [];
+    function initSendInfo() {
+        console.log(JSON.stringify(sendInfoList))
+        var html = "<table width='100%'>"
+        html+="<tr>"
+        html += "<td>发送状态</td>";
+        html += "<td>发送人</td>";
+        html += "<td>发送信息</td>";
+        html+="</tr>"
+        for(var i=sendInfoList.length-1;i >= 0;i--){
+            html+="<tr>"
+            html += "<td title='"+ sendInfoList[i].msg +"'>" + (sendInfoList[i].code===1 ? "成功":"失败") +"</td>";
+            html += "<td>" + sendInfoList[i].who +"</td>";
+            html += "<td title='"+ sendInfoList[i].info +"'>" + sendInfoList[i].info.substring(0,10) +"...</td>";
+            html+="</tr>"
+        }
+        html+="</table>"
+        document.getElementById("sendInfoSpan").innerHTML = html;
+    }
     var senDuser = [
-        "周礼",
+        "源本一一周礼",
         "萧超斌",
         "wbw-017",
         "文件传输助手",
-        "3+3=6"
+        "3+3=6",
+        "巴途"
     ];
     function getSendUserList() {
         var checkedValues = [];
@@ -47,6 +84,24 @@
         //console.log(checkedValues);
         return checkedValues;
     }
+
+    function testJavaFun(){
+        //alert(123)
+        //var result = aardio.sendWxInfo(['wbw-017'], "我是你的朋友...");
+        //console.log(result)
+        (async(whoList, info) => {
+            for(var i=0;i<whoList.length;i++){
+                console.log("---22---who--->" + whoList[i]+"," + info)
+                await aardio.sendWxInfo(whoList[i], info).then(res=>{
+                    console.log("------->>>",res);
+                    res.info = info;
+                    res.who = whoList[i];
+                    sendInfoList.push(res)
+                    initSendInfo();
+                });
+            }
+        })(['wbw-017'], "我是你的朋友...")
+    }
 </script>
 <SCRIPT LANGUAGE="JavaScript">
     <!--
@@ -55,6 +110,11 @@
             console.log("------who--->" + whoList[i])
             var result = await aardio.sendWxInfo(whoList[i], info);
             console.log(result)
+            var obj = JSON.parse(result);
+            obj.info = info;
+            obj.who = whoList[i];
+            sendInfoList.push(obj)
+            initSendInfo();
         }
     };
 
@@ -64,7 +124,7 @@
             alert("请选择需要通知的人！！！")
             return;
         }
-        doSomething(whoList, "消息 :"+ document.getElementById(id).innerText)
+        doSomething(whoList, "机器人消息 :"+ document.getElementById(id).innerText)
     }
     //-->
 </SCRIPT>
@@ -109,7 +169,7 @@
                     var doc = parser.parseFromString(result, 'text/html');
                     //var div = doc.querySelector('div');
                     var div = doc.getElementById("left").children[0].innerText.split("微信扫描右侧二维码")[0].replace("document.writeln(\"","").replace("，大家相互转告油价大跌中。","");
-                    console.log(div)
+                    //console.log(div)
                     document.getElementById("petrol").innerHTML = div
                 }catch (e) {
                     getErrorInfo()
