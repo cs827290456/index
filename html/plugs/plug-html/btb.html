@@ -16,13 +16,14 @@
     <div id="app">
     </div>
     <!-- built files will be auto injected -->
-
-
    <script>
-
        function coinPrice() {
            if ("WebSocket" in window) {
                //https://www.528btc.com/coin/
+
+
+
+
                var allb = [];
                allb["1"] = "BTC比特币";
                allb["2"] = "ETH以太坊";
@@ -49,8 +50,14 @@
                html += "</table>"
                document.getElementById("app").innerHTML = html;
 
-
-               let ws = new WebSocket("wss://api.lianpucom.com/xhj-gather-app/open/websocket/ticker-cny-all");
+               // let ws = new WebSocket("wss://api.lianpucom.com/xhj-gather-app/open/websocket/ticker-cny-all");
+               let ws = new WebSocket("wss://api.582btc.com/xhj-gather-app/open/websocket/ticker");
+               ws.onopen = function(event) {
+                 // 准备要发送的 JSON 数据
+                 const data = {"op":"subscribe","name":"ticker","rateUnit":"USD","ids":[]}
+                 // 将对象转换为 JSON 字符串并发送
+                 ws.send(JSON.stringify(data));
+               };
                ws.onmessage = function (evt) {
                    let data = JSON.parse(evt.data);
 
