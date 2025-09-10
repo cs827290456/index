@@ -1,4 +1,4 @@
-// 网站数据配置文件 - 集中管理所有官网数据
+// 网站数据配置文件 - 集中管理所有官网数据  
 const websiteData = {
   // 网站基本配置
   site: {
@@ -40,7 +40,7 @@ const websiteData = {
   company: {
     name: "长沙市源本信息科技有限公司",
     displayName: "科技创新2",
-    slogan: "创新驱动未来，科技改变生活",
+    slogan: "创新驱动未来，科技改变生活", 
     description: "我们是一家专注于前沿技术研发的创新型企业，致力于为客户提供最优质的技术解决方案。",
     founded: "2015",
     employees: "40+",
@@ -113,7 +113,7 @@ const websiteData = {
       link: "#solutions"
     },
     {
-      title: "云计算服务平台",
+      title: "云计算服务平台", 
       subtitle: "安全、稳定、高效的云端解决方案，助力企业数字化转型",
       image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600'%3E%3Cdefs%3E%3ClinearGradient id='grad2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2310b981;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23059669;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='600' fill='url(%23grad2)'/%3E%3Cellipse cx='300' cy='200' rx='100' ry='60' fill='white' opacity='0.2'/%3E%3Cellipse cx='900' cy='400' rx='150' ry='80' fill='white' opacity='0.15'/%3E%3Cellipse cx='600' cy='100' rx='80' ry='40' fill='white' opacity='0.25'/%3E%3Crect x='100' y='400' width='20' height='30' fill='white' opacity='0.2' rx='3'/%3E%3Crect x='130' y='390' width='20' height='40' fill='white' opacity='0.25' rx='3'/%3E%3Crect x='160' y='395' width='20' height='35' fill='white' opacity='0.2' rx='3'/%3E%3Crect x='1000' y='100' width='25' height='40' fill='white' opacity='0.15' rx='4'/%3E%3Crect x='1030' y='90' width='25' height='50' fill='white' opacity='0.2' rx='4'/%3E%3Ctext x='600' y='250' text-anchor='middle' fill='white' font-size='48' font-family='Arial, sans-serif'%3E☁️ 云计算%3C/text%3E%3Ctext x='600' y='320' text-anchor='middle' fill='white' font-size='24' font-family='Arial, sans-serif'%3E云计算服务平台%3C/text%3E%3C/svg%3E",
       cta: "立即体验",
@@ -123,7 +123,7 @@ const websiteData = {
       title: "大数据分析系统",
       subtitle: "深度挖掘数据价值，助力智能决策，释放数据潜能",
       image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600'%3E%3Cdefs%3E%3ClinearGradient id='grad3' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23f59e0b;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23d97706;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='600' fill='url(%23grad3)'/%3E%3Crect x='150' y='300' width='80' height='200' fill='white' opacity='0.3'/%3E%3Crect x='280' y='250' width='80' height='250' fill='white' opacity='0.35'/%3E%3Crect x='410' y='200' width='80' height='300' fill='white' opacity='0.4'/%3E%3Crect x='540' y='220' width='80' height='280' fill='white' opacity='0.35'/%3E%3Crect x='670' y='180' width='80' height='320' fill='white' opacity='0.3'/%3E%3Crect x='800' y='240' width='80' height='260' fill='white' opacity='0.4'/%3E%3Crect x='930' y='280' width='80' height='220' fill='white' opacity='0.35'/%3E%3Cpath d='M50,50 Q200,30 350,60 T650,80 T950,50' stroke='white' stroke-width='2' fill='none' opacity='0.3'/%3E%3Cpath d='M80,520 Q300,500 500,530 T800,540 T1100,520' stroke='white' stroke-width='2' fill='none' opacity='0.2'/%3E%3Ccircle cx='200' cy='40' r='4' fill='white' opacity='0.5'/%3E%3Ccircle cx='500' cy='70' r='4' fill='white' opacity='0.4'/%3E%3Ccircle cx='800' cy='45' r='4' fill='white' opacity='0.6'/%3E%3Ctext x='600' y='250' text-anchor='middle' fill='white' font-size='48' font-family='Arial, sans-serif'%3E📊 大数据%3C/text%3E%3Ctext x='600' y='320' text-anchor='middle' fill='white' font-size='24' font-family='Arial, sans-serif'%3E大数据分析系统%3C/text%3E%3C/svg%3E",
-      cta: "咨询方案",
+      cta: "咨询方案", 
       link: "#contact"
     },
     {
@@ -158,7 +158,7 @@ const websiteData = {
       caseStudy: "知名制造企业智能化改造，生产效率提升35%"
     },
     {
-      title: "金融科技解决方案",
+      title: "金融科技解决方案", 
       description: "区块链、AI风控、移动支付等金融科技创新应用，为金融机构提供安全高效的技术支持",
       image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='fin' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23f59e0b;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23d97706;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23fin)'/%3E%3Ctext x='200' y='140' text-anchor='middle' fill='white' font-size='36' font-family='Arial, sans-serif'%3E💰%3C/text%3E%3Ctext x='200' y='180' text-anchor='middle' fill='white' font-size='18' font-family='Arial, sans-serif'%3E金融科技%3C/text%3E%3C/svg%3E",
       tags: ["金融", "区块链", "风控", "支付"],
@@ -241,7 +241,7 @@ const websiteData = {
       description: "智慧教育解决方案，包括在线课堂、学习分析、智能辅导等功能模块",
       result: "教学效果提升60%，学生满意度提升45%，教师工作效率提升35%",
       logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'%3E%3Crect width='100' height='60' fill='%239c27b0'/%3E%3Ctext x='50' y='35' text-anchor='middle' fill='white' font-size='16' font-family='Arial, sans-serif'%3E教育%3C/text%3E%3C/svg%3E",
-      industry: "教育行业",
+      industry: "教育行业", 
       scale: "10万+师生",
       duration: "10个月"
     },
@@ -269,7 +269,7 @@ const websiteData = {
     },
     {
       title: "AI产品荣获行业创新奖",
-      date: "2024-01-10",
+      date: "2024-01-10", 
       summary: "公司自主研发的AI智能识别系统在行业评选中脱颖而出，荣获年度创新产品奖，产品技术领先性获得业界广泛认可。",
       category: "产品动态",
       image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 250'%3E%3Cdefs%3E%3ClinearGradient id='news2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23f59e0b;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23d97706;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='250' fill='url(%23news2)'/%3E%3Ctext x='200' y='110' text-anchor='middle' fill='white' font-size='32' font-family='Arial, sans-serif'%3E🤖%3C/text%3E%3Ctext x='200' y='150' text-anchor='middle' fill='white' font-size='16' font-family='Arial, sans-serif'%3EAI创新奖%3C/text%3E%3C/svg%3E",
@@ -310,12 +310,12 @@ const websiteData = {
   ],
 
   // 联系方式信息
-  contact: {
+  contact: {    
     address: "长沙高新开发区岳麓西大道1698号麓谷科技创新创业园A栋23楼",
     phone: "+86 010-1234-5678",
     email: "contact@company.com",
     workingHours: "周一至周五 9:00-18:00",
-
+    
     // 联系方式卡片配置
     contactCard: {
       title: "联系方式",
@@ -343,7 +343,7 @@ const websiteData = {
         }
       ]
     },
-
+    
     // 交通指南卡片配置
     trafficCard: {
       title: "交通指南",
@@ -372,7 +372,7 @@ const websiteData = {
         }
       ]
     },
-
+    
     departments: [
       {
         name: "销售部",
@@ -381,7 +381,7 @@ const websiteData = {
       },
       {
         name: "技术支持",
-        phone: "+86 010-1234-5602",
+        phone: "+86 010-1234-5602", 
         email: "support@company.com"
       },
       {
@@ -414,7 +414,7 @@ function generateJsonLd() {
     console.warn('缺少生成JSON-LD所需的数据');
     return {};
   }
-
+  
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
