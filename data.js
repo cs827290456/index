@@ -14,3 +14,52 @@ const websiteData = {
       favicon32: "/favicon-32x32.png",
       favicon16: "/favicon-16x16.png"
     }
+    canonical: "https://www.company.com",
+    favicon: {
+      ico: "/favicon.ico",
+      appleTouchIcon: "/apple-touch-icon.png",
+      favicon32: "/favicon-32x32.png",
+      favicon16: "/favicon-16x16.png"
+    }
+    canonical: "https://www.company.com",
+    favicon: {
+      ico: "/favicon.ico",
+      appleTouchIcon: "/apple-touch-icon.png",
+      favicon32: "/favicon-32x32.png",
+      favicon16: "/favicon-16x16.png"
+    }
+    canonical: "https://www.company.com",
+    favicon: {
+      ico: "/favicon.ico",
+      appleTouchIcon: "/apple-touch-icon.png",
+      favicon32: "/favicon-32x32.png",
+      favicon16: "/favicon-16x16.png"
+    }
+    canonical: "https://www.company.com",
+    favicon: {
+      ico: "/favicon.ico",
+      appleTouchIcon: "/apple-touch-icon.png",
+      favicon32: "/favicon-32x32.png",
+      favicon16: "/favicon-16x16.png"
+    }
+    canonical: "https://www.company.com",
+    favicon: {
+      ico: "/favicon.ico",
+      appleTouchIcon: "/apple-touch-icon.png",
+      favicon32: "/favicon-32x32.png",
+      favicon16: "/favicon-16x16.png"
+    }
+    canonical: "https://www.company.com",
+    favicon: {
+      ico: "/favicon.ico",
+      appleTouchIcon: "/apple-touch-icon.png",
+      favicon32: "/favicon-32x32.png",
+      favicon16: "/favicon-16x16.png"
+    }
+    canonical: "https://www.company.com",
+    favicon: {
+      ico: "/favicon.ico",
+      appleTouchIcon: "/apple-touch-icon.png",
+      favicon32: "/favicon-32x32.png",
+      favicon16: "/favicon-16x16.png"
+    }
