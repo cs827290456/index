@@ -1,1 +1,432 @@
-sadfsdafsadfs���
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title"><!-- 动态生成 --></title>
+    <meta name="description" content="" id="page-description">
+    <meta name="keywords" content="" id="page-keywords">
+    <meta name="author" content="" id="page-author">
+    <meta name="robots" content="" id="page-robots">
+    <link rel="canonical" href="" id="page-canonical">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="" id="og-type">
+    <meta property="og:url" content="" id="og-url">
+    <meta property="og:title" content="" id="og-title">
+    <meta property="og:description" content="" id="og-description">
+    <meta property="og:image" content="" id="og-image">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="" id="twitter-card">
+    <meta property="twitter:url" content="" id="twitter-url">
+    <meta property="twitter:title" content="" id="twitter-title">
+    <meta property="twitter:description" content="" id="twitter-description">
+    <meta property="twitter:image" content="" id="twitter-image">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="" id="favicon-ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="" id="apple-touch-icon">
+    <link rel="icon" type="image/png" sizes="32x32" href="" id="favicon-32">
+    <link rel="icon" type="image/png" sizes="16x16" href="" id="favicon-16">
+
+    <!-- CSS样式 -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- AOS动画库 -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="data.js" as="script">
+    <link rel="preload" href="script.js" as="script">
+</head>
+<body>
+    <!-- 页面加载器 -->
+    <div id="page-loader" class="page-loader">
+        <div class="loader-content">
+            <div class="spinner">
+                <!-- 纯 CSS 加载动效 -->
+            </div>
+            <div class="loader-text">
+                <h3 id="loader-title"><!-- 动态生成 --></h3>
+                <p id="loader-subtitle"><!-- 动态生成 --></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skip to main content - 无障碍访问 -->
+    <a href="#main-content" class="skip-link" id="skip-link"><!-- 动态生成 --></a>
+
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar" role="navigation" aria-label="主导航">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="" id="nav-logo-icon"></i>
+                <span class="logo-text" id="nav-logo-text"><!-- 动态生成 --></span>
+            </div>
+
+            <ul class="nav-menu" id="nav-menu" role="menubar">
+                <!-- 动态生成导航菜单 -->
+            </ul>
+
+            <div class="nav-actions">
+                <div class="nav-toggle" id="nav-toggle" aria-label="切换导航菜单" role="button" tabindex="0">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main id="main-content">
+        <!-- 首页轮播 -->
+        <section id="home" class="hero-section" aria-label="首页轮播">
+            <div class="hero-slider" id="hero-slider">
+                <!-- 动态生成轮播内容 -->
+            </div>
+
+            <div class="hero-controls">
+                <div class="hero-indicators" id="hero-indicators" role="tablist" aria-label="轮播指示器">
+                    <!-- 动态生成指示器 -->
+                </div>
+
+                <div class="hero-nav-buttons">
+                    <button class="hero-nav-btn prev" onclick="previousSlide()" aria-label="上一张">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="hero-nav-btn next" onclick="nextSlide()" aria-label="下一张">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 滚动提示 -->
+            <div class="scroll-indicator">
+                <div class="scroll-mouse">
+                    <div class="scroll-wheel"></div>
+                </div>
+                <p><i class="" id="scroll-hint-icon"></i><span id="scroll-hint-text"><!-- 动态生成 --></span></p>
+            </div>
+        </section>
+
+        <!-- 关于我们 -->
+        <section id="about" class="about-section" aria-label="关于我们">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        <i class="fas fa-building text-primary me-3"></i>
+                        关于我们
+                    </h2>
+                    <p class="section-subtitle"><i class="fas fa-lightbulb text-warning me-2"></i>创新驱动未来，科技改变生活</p>
+                </div>
+
+                <div class="about-content">
+                    <div class="about-text" data-aos="fade-right">
+                        <div class="about-description" id="about-description">
+                            <!-- 动态生成关于我们内容 -->
+                        </div>
+
+                        <div class="about-stats" id="about-stats">
+                            <!-- 动态生成统计数据 -->
+                        </div>
+
+
+                    </div>
+
+                    <div class="about-image" data-aos="fade-left" data-aos-delay="400">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop" alt="团队合作" class="about-img">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 产品服务 -->
+        <!-- 已删除 -->
+
+        <!-- 解决方案 -->
+        <section id="solutions" class="solutions-section" aria-label="解决方案">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        <i class="fas fa-cogs text-primary me-3"></i>
+                        解决方案---6666
+                    </h2>
+                    <p class="section-subtitle"><i class="fas fa-puzzle-piece text-info me-2"></i>针对不同行业的专业解决方案</p>
+                </div>
+
+                <div class="solutions-grid" id="solutions-grid" data-aos="fade-up" data-aos-delay="200">
+                    <!-- 动态生成解决方案内容 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 客户案例 -->
+        <section id="cases" class="cases-section" aria-label="客户案例">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        <i class="fas fa-trophy text-warning me-3"></i>
+                        成功案例
+                    </h2>
+                    <p class="section-subtitle"><i class="fas fa-star text-warning me-2"></i>成功案例见证我们的专业实力</p>
+                </div>
+
+                <div class="cases-grid" id="cases-grid" data-aos="fade-up" data-aos-delay="200">
+                    <!-- 动态生成客户案例内容 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 团队介绍 -->
+        <!-- 已删除 -->
+
+        <!-- 新闻动态 -->
+        <section id="news" class="news-section" aria-label="新闻动态">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        <i class="fas fa-newspaper text-info me-3"></i>
+                        新闻动态
+                    </h2>
+                    <p class="section-subtitle"><i class="fas fa-rss text-info me-2"></i>了解公司最新动态和行业资讯</p>
+                </div>
+
+                <div class="news-grid" id="news-grid" data-aos="fade-up" data-aos-delay="200">
+                    <!-- 动态生成新闻内容 -->
+                </div>
+
+
+            </div>
+        </section>
+
+        <!-- 联系我们 -->
+        <section id="contact" class="contact-section" aria-label="联系我们">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        <i class="fas fa-phone-alt text-success me-3"></i>
+                        联系我们
+                    </h2>
+                    <p class="section-subtitle"><i class="fas fa-headset text-success me-2"></i>随时为您提供专业咨询服务</p>
+                </div>
+
+                <!-- 采用新闻动态的网格布局 -->
+                <div class="contact-grid" data-aos="fade-up" data-aos-delay="200">
+                    <!-- 联系方式卡片 -->
+                    <div class="contact-card">
+                        <div class="contact-card-header">
+                            <div class="contact-card-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <h3 class="contact-card-title">联系方式</h3>
+                        </div>
+                        <div class="contact-card-content">
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h4>公司地址</h4>
+                                    <p id="contact-address">北京市海淀区中关村大街1号科技大厦A座8层</p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h4>联系电话</h4>
+                                    <p id="contact-phone">+86 010-1234-5678</p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h4>邮箱地址</h4>
+                                    <p id="contact-email">contact@company.com</p>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h4>工作时间</h4>
+                                    <p id="contact-hours">周一至周五 9:00-18:00</p>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- 交通指南卡片 -->
+                    <div class="contact-card">
+                        <div class="contact-card-header">
+                            <div class="contact-card-icon traffic">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <h3 class="contact-card-title">交通指南</h3>
+                        </div>
+                        <div class="contact-card-content">
+                            <!-- 地铁交通 -->
+                            <div class="traffic-item">
+                                <div class="traffic-icon subway">
+                                    <i class="fas fa-subway"></i>
+                                </div>
+                                <div class="traffic-details">
+                                    <h4>地铁路线</h4>
+                                    <p>4号线/10号线海淀黄庄站A出口</p>
+                                    <span>步行5分钟可到达</span>
+                                </div>
+                            </div>
+
+                            <!-- 公交交通 -->
+                            <div class="traffic-item">
+                                <div class="traffic-icon bus">
+                                    <i class="fas fa-bus"></i>
+                                </div>
+                                <div class="traffic-details">
+                                    <h4>公交路线</h4>
+                                    <p>332、608、614、683路</p>
+                                    <span>中关村南站下车</span>
+                                </div>
+                            </div>
+
+                            <!-- 自驾交通 -->
+                            <div class="traffic-item">
+                                <div class="traffic-icon car">
+                                    <i class="fas fa-car"></i>
+                                </div>
+                                <div class="traffic-details">
+                                    <h4>自驾路线</h4>
+                                    <p>大厦地下停车场</p>
+                                    <span>充电桩设施完备</span>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="" id="footer-logo-icon"></i>
+                        <span class="logo-text" id="footer-logo-text"><!-- 动态生成 --></span>
+                    </div>
+                    <p class="footer-description" id="footer-description">
+                        <!-- 动态生成 -->
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4><i class="fas fa-rocket text-primary me-2"></i>科技创新</h4>
+                    <ul class="footer-links" id="footer-links">
+                        <!-- 动态生成 -->
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4><i class="fas fa-phone text-success me-2"></i>联系方式</h4>
+                    <div class="footer-contact" id="footer-contact">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p id="footer-copyright"><!-- 动态生成 --></p>
+                    <p id="footer-icp"><!-- 动态生成 --></p>
+                </div>
+                <div class="footer-legal-links" id="footer-legal-links">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="back-to-top" onclick="scrollToTop()" aria-label="返回顶部" title="返回顶部">
+        <i class="fas fa-rocket"></i>
+    </button>
+
+
+
+
+
+    <!-- JavaScript文件 -->
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+
+    <!-- AOS动画库 -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- 初始化脚本 -->
+    <script>
+        // 初始化AOS动画
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100,
+            easing: 'ease-out-cubic'
+        });
+
+        // 性能监控
+        window.addEventListener('load', function() {
+            if ('performance' in window) {
+                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                console.log(`页面加载时间: ${loadTime}ms`);
+
+                // 发送性能数据到分析服务
+                if (loadTime > 3000) {
+                    console.warn('页面加载时间较长，建议优化');
+                }
+            }
+        });
+
+        // 错误监控
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript错误:', e.error);
+            // 这里可以发送错误报告到监控服务
+        });
+
+        // Service Worker 注册（可选）
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('SW注册成功: ', registration.scope);
+                }, function(err) {
+                    console.log('SW注册失败: ', err);
+                });
+            });
+        }
+    </script>
+
+    <!-- 结构化数据 - JSON-LD -->
+    <script type="application/ld+json" id="structured-data">
+    <!-- 动态生成 -->
+    </script>
+</body>
+</html>
