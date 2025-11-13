@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!-- 支持弹框分析历史数据 -->
+    <link type="text/css" rel="stylesheet" media="all" href="../../layer_mobile/need/layer.css" />
+    <script type="text/javascript" src="../../../assets/plugins/layerMobile/layer.js"></script>
+<!--    <script  type="text/javascript"  src="https://cdn.staticfile.org/layui/2.9.3/layui.js"></script>-->
+    <style>
+        body{
+            background-color: #0c0c0c;
+            color: rgb(186, 186, 186);
+        }
+        table{
+            border-collapse:collapse;
+            border-spacing:0;
+            /*border:1px solid #ff0000;*/
+            /*color: #787878;*/
+        }
+
+        td {
+            border: 1px solid rgba(120, 120, 120, 0.92);
+        }
+
+        .send {
+            /*color: rgba(120, 120, 120);*/
+            color: rgb(186, 186, 186);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body onload="initHtml()">
+<a class="send" href="#" onclick="location.reload()">刷新</a>
+<a class="send" href="https://cs827290456.github.io/index/">首页</a>
+<a class="send" href="btb.html">币市情况</a>
+<a class="send" onclick="fx()">股票分析</a>
+<br>
+<span >时间</span>：<span id="time" >时间加载中...</span><br>
+<span class="send" onclick="sendInfo('hj')">黄金</span>：<span id="hj">黄金价格获取中...</span>
+<br>
+<span class="send" onclick="sendInfo('petrol')">油价</span>：<span id="petrol" >汽油信息获取中..</span>
+<br>
+<!--var 昨收 = false;-->
+<!--var 今开 = false;-->
+<!--var 成交量 = true;-->
+<!--var 最高价 = true;-->
+<!--var 最低价 = true;-->
+<!--var 换手率 = true;-->
+<!--var 总市值 = true;-->
+<span style="font-size:14px">
+    <input type="checkbox" id="昨收" onclick="setOff('昨收')" /><label for="昨收">昨收</label>
+    <input type="checkbox" id="今开" onclick="setOff('今开')" /><label for="今开">今开</label>
+    <input type="checkbox" id="成交量" onclick="setOff('成交量')" /><label for="成交量">成交</label>
+    <input type="checkbox" id="最高价" onclick="setOff('最高价')" /><label for="最高价">最高</label>
+    <input type="checkbox" id="最低价" onclick="setOff('最低价')"  /><label for="最低价">最低</label>
+    <input type="checkbox" id="换手率" onclick="setOff('换手率')" /><label for="换手率">换手</label>
+    <input type="checkbox" id="总市值" onclick="setOff('总市值')" /><label for="总市值">总值</label>
+</span>
+<br>
+<span id="data2" style="font-size: 12px;"></span>
+<span id="data" style="font-size: 12px;"></span>
+</body>
+<script type="text/javascript">
+
+    function isMobileDevice() {
+        // return true;
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        // 检查设备是否为手机
+        return /iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(userAgent);
+    }
+
+    if (isMobileDevice()) {
+        console.log("这是一个手机设备");
+    } else {
+        console.log("这不是一个手机设备");
+    }
+
+
+    //黄金   http://quote.eastmoney.com/globalfuture/AUTD.html?from=360
+    function jQueryHuangjing(info){
+        $("#hj").html(info.qt.p +"元/克");
+    }
+
+    //黄金
+    function getGold() {
+        $.ajax({
+            type: "GET",
+            url: 'https://futsseapi.eastmoney.com/static/118_AUTD_qt?callbackName=jQueryHuangjing&_=' + new Date().getTime(),
+            success: function(result) {
+                //console.log('获取数据成功')
+            }});
+    }
+    //petrol  http://www.qiyoujiage.com/
+    function getPetrol() {
+        try {
+        $.ajax({
+            type: "GET",
+            url: 'http://www.qiyoujiage.com?callbackName=jQueryHuangjing&_=' + new Date().getTime(),
+            success: function(result) {
+                try {
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(result, 'text/html');
+                    //var div = doc.querySelector('div');
+                    var div = doc.getElementById("left").children[0].innerText.split("微信扫描右侧二维码")[0].replace("document.writeln(\"","").replace("，大家相互转告油价大跌中。","");
+                    //console.log(div)
+                    document.getElementById("petrol").innerHTML = div
+                }catch (e) {
+                    getErrorInfo()
+                }
+            },error:function (e) {
+                getErrorInfo()
+            }
+        });
+         }catch (e) {
+            getErrorInfo()
+        }
+    }
+    function getErrorInfo() {
+        document.getElementById("petrol").innerHTML = "获取失败 <span style='color: red' onclick='showPetrolInfo()' href='http://www.qiyoujiage.com'>详情1</span>, <span style='color: red' onclick='window.open(\"http://www.qiyoujiage.com\")'>详情2</span>, <a style='color: red' href='http://www.qiyoujiage.com'>详情3</a>"
+    }
+
+    function initHtml() {
+        getPetrol();
+        runfun();
+        initCheckBox();
+    }
+
+    var ss = {};
+    ss.估价  = true;
+    ss.差距 = true;
+    ss.昨收 = false;
+    ss.今开 = false;
+    ss.成交量 = false;
+    ss.最高价 = true;
+    ss.最低价 = true;
+    ss.换手率 = false;
+    ss.总市值 = false;
+
+
+
+    function setOff(id) {
+        ss[id] = document.getElementById(id).checked;
+    }
+
+    function initCheckBox() {
+        for(i in ss){
+            if(document.getElementById(i)){
+                document.getElementById(i).checked = ss[i];
+            }
+        }
+    }
+
+
+    //定义字符串
+    var config = "sh000001-4000|sh601128-788|sz002685-9.2|sz000001"
+    config = "sh000001-3500|sh600170-2.5|sh601128-7.00|sh601988-3.10|sh601868-2.10|sh600601-11.10|sz002685-3.00|sh601577-7.00|sz000001-11.28|sh600036-33.80|sh601009-9.00|sz000651-36.00|sh601328-4.70|sh601398-4.30|sh601169-4.30|sh601939-5.50|sh601288-2.88|sh600926-10.00|sh601658-4.00|sh601998-4.50|sz002142-23.00|sh600015-4.80|sh601818-2.80|sh601988-3.00|sz002966-6.28|sh600926-7.28|sz002807-3.80|sh600000-6.80|sh601328-4.45|sh600908-4.90|sh601528-4.50|sh603323-4.38|sh600919-5.81|sh601166-16.00|sh601838-11.00|sz002948-3.20"
+    var s = getUrlParam("s");
+    console.log(s)
+    if(s){
+
+        config = s;
+    }
+    function getNewStock(){
+        var arr = config.split("|")
+        var keyArr = [];
+        //console.log(arr.length)
+        //初始化。。。。
+        for(i in arr){
+            var cfg = arr[i].split("-");
+            var code = cfg[0]
+            // keyArr.push("s_"+ code)
+            keyArr.push(code)
+        }
+        getStockNewPrice(keyArr)
+    }
+
+
+    function getStockNewPrice(keyArr){
+        //代号+code
+        //名称，当前，涨幅，
+        var url = "https://qt.gtimg.cn/q=" + keyArr.join(",");
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(result) {
+                var arr = [];
+                var rs = result.split(";")
+                for(i=0;i<rs.length;i++){
+                    if(rs[i].length>3){
+                        var str = rs[i].split("\"")[1]
+                        var s_ = str.split("~");
+                        var key = rs[i].split("=")[0].replace("v_","").replace("\n","");
+                         //                 1        2     3    4    5     6     7
+                        //v_s_sh601128="1~常熟银行~601128~7.23~0.13~1.83~787163~56729~~239.78~GP-A"
+                        //  v_sh600103="1~青山纸业~600103~2.97~2.97~2.98~114570~43024~71537~2.97~205~2.96~3333~2.95~3898~2.94~1815~2.93~1141~2.98~1680~2.99~1687~3.00~1287~3.01~721~3.02~900~11:29:18/2.97/26/S/7722/9057|11:28:53/2.97/1/S/297/9028|11:28:41/2.97/1/S/297/9016|11:28:17/2.97/51/S/15147/8988|11:28:14/2.97/388/B/115361/8985|11:27:50/2.97/5/B/1485/8954~20181114113444~0.00~0.00~3.04~2.95~2.97/114570/34185009~114570~3419~1.08~29.79~~3.04~2.95~3.03~31.54~52.68~1.52~3.27~2.67~1.81~4117~2.98~22.94~49.98";
+
+
+                        /*
+                        0	51	        1:沪A，51:深A
+                        1	永利股份	股票名称
+                        2	300230	    股票代码
+                        3	5.7	        当前价格
+                        4	5.52	    昨收
+                        5	5.49	    今开
+                        6	132876	    成交量（手）
+                        7	73161	    外盘
+                        8	59712	    内盘
+                        9	5.68	    买一
+                        10	911	        买一量（手）
+                        11	5.67	    买二
+                        12	1420	    买二量（手）
+                        13	5.66	    买三
+                        14	223	        买三量（手）
+                        15	5.65	    买四
+                        16	1121	    买四量（手）
+                        17	5.64	    买五
+                        18	653	        买五量（手）
+                        19	5.7	        卖一
+                        20	806	        卖一量（手）
+                        21	5.71	    卖二
+                        22	687	        卖二量（手）
+                        23	5.72	    卖三
+                        24	1042	    卖三量（手）
+                        25	5.73	    卖四
+                        26	954	        卖四量（手）
+                        27	5.74	    卖五
+                        28	1460	    卖五量（手）
+                        29	11:29:52/5.70/60/B/34146/4919|11:29:49/5.69/6/S/3414/4917	最近逐笔成交
+                        30	20181114113012	时间
+                        31	0.18	    涨跌
+                        32	3.26	    涨幅%
+                        33	5.73	    最高价
+                        34	5.46	    最低价
+                        35	5.70/132876/74586032	价格/成交量（手）/成交额
+                        36	132876	    成交量（手）
+                        37	7459	    成交额（万）
+                        38	2.46	    换手率%
+                        39	10.89	    市盈率(TTM)
+                        40
+                        41	5.73	    最高价
+                        42	5.46	    最低价
+                        43	4.89	    振幅%
+                        44	30.78	    流通市值(亿)
+                        45	46.52	    总市值
+                        46	1.52	    市净率
+                        47	6.07	    涨停价
+                        48	4.97	    跌停价
+                        49	2.41	    量比
+                        50	-621	    委差
+                        51	5.61	    未知
+                        52	9.88	    市盈率(动)
+                        53	15.93	    市盈率(静)
+                         */
+
+                        arr[key] = {
+                            price: s_[3] || 0,
+                            name:s_[1],
+                            zf:s_[32],
+                            昨收:s_[4],
+                            今开:s_[5],
+                            成交量:s_[6],
+                            最高价:s_[33],
+                            最低价:s_[34],
+                            换手率:s_[38],
+                            总市值:s_[45],
+                        }
+                    }
+                }
+                // console.log(arr)
+                initStockHtml(arr)
+            }}
+        )
+    }
+
+    function initStockHtml(stockCfg){
+
+        //     昨收:s_[4],
+        //     今开:s_[5],
+        //     成交量:s_[6],
+        //     最高价:s_[33],
+        //     最低价:s_[34],
+        //     换手率:s_[38],
+        //     总市值:s_[45],
+
+        var arr = config.split("|")
+        var table_html = "<table style='margin-left: 7px;' >";
+        table_html += "<tr style='font-weight: bold'>" +
+            "<td align='center'>序号</td>";
+            if(!isMobileDevice()){
+                table_html += "<td align='center'>代码</td>";
+            }
+             table_html +="<td align='center'>名称</td>" +
+            "<td align='center'>当前</td>" +
+            "<td align='center'>涨幅%</td>";
+            if(ss.估价)
+                table_html += "<td align='center'>估价</td>"
+            if( ss.差距 )
+                table_html += "<td align='center'>差距</td>";
+            if(ss.昨收)
+                table_html += "<td align='center'>昨收</td>";
+            if(ss.今开)
+                table_html +=  "<td align='center'>今开</td>" ;
+            if(ss.成交量)
+                table_html += "<td align='center'>成交量</td>" ;
+            if(ss.最高价)
+                table_html += "<td align='center'>最高价</td>" ;
+            if(ss.最低价)
+                table_html += "<td align='center'>最低价</td>" ;
+            if(ss.换手率)
+                table_html +=  "<td align='center'>换手率</td>" ;
+            if(ss.总市值)
+                table_html += "<td align='center'>总市值(亿)</td>";
+            table_html +=  "<td align='center'>操作</td>" +
+            "</tr>"
+
+        // 成交量:s_[6],
+        // 成交额:s_[7],
+        // 总市值:s_[9],
+
+        for(i in arr){
+            var cfg = arr[i].split("-");
+            var code = cfg[0]
+            var myPrice = cfg[1] || 0;
+            var chaj = (stockCfg[code].price - parseFloat(myPrice)).toFixed(2);
+            var color2  = "";
+            if(chaj <= 0 ){
+                color2 = "red";
+            }
+            table_html+= "<tr>"
+            table_html+= "<td align='center' style='color: "+ color2 +"'>"+ (parseInt(i)+1) + "</td>"
+            if(!isMobileDevice()) {
+                table_html += "<td  onclick=showHistory('" + code.substring(2, code.length) + "')  align='center' style='cursor: pointer;color: " + color2 + "'>" + code + "</td>"
+            }
+            table_html+= "<td align='center' style='color: "+ color2 +"'>"+ stockCfg[code].name +" </td>"
+            table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].price +"</td>"
+            table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].zf +"</td>"
+            if(ss.估价)
+            table_html+= "<td align='right' style='color: "+ color2 +"'>"+  myPrice + "</td>"
+            if(ss.差距)
+            table_html+= "<td align='right' style='color: "+ color2 +"'>"+ chaj + "</td>"
+            if(ss.昨收)
+            table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].昨收 + "</td>"
+            if(ss.今开)
+            table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].今开 + "</td>"
+            if(ss.成交量)
+            table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].成交量 + "</td>"
+            if(ss.最高价)
+            table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].最高价 + "</td>"
+            if(ss.最低价)
+            table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].最低价 + "</td>"
+            if(ss.换手率)
+            table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].换手率 + "</td>"
+            if(ss.总市值)
+            table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].总市值 + "</td>"
+            table_html+= "<td> <span style='cursor: pointer' onclick=sendInfo('gp_"+ i +"') >&nbsp; 复制 &nbsp; </span> <span id='gp_"+ i +"' style='display: none' >【" + stockCfg[code].name +"】当前价格:"+ stockCfg[code].price+",涨幅:"+ stockCfg[code].zf+"%"+"</span> </td>"
+            table_html+= "</tr>"
+        }
+        table_html+= "</table>"
+        $("#data2").html(table_html);
+        //⬆️⬇️
+        window.setTimeout(function () {
+            runIndex ++
+            //var myDate = new Date()
+
+            var now = new Date();
+            var nowTime = now.toLocaleString();
+            var date = nowTime.substring(0,10);//截取日期
+            var time = nowTime.substring(10,20); //截取时间
+            var week = now.getDay(); //星期
+            var timeInfo = date + "" + time + "(周" + week+")";
+            //console.log(timeInfo);
+            // var txt =  "." + myDate.getHours() + "." + myDate.getMinutes() + ".";
+            var txt = runIndex%3==0 ? "1" : ( runIndex%3==1 ? "2" : "3")
+            // $("#msg").text(txt)
+            $("#time").text(timeInfo)
+            runfun();
+        }, 1000)
+    }
+
+
+	var showTitle = false;
+	var runIndex = 0;
+    function runfun() {
+        getGold();
+        getNewStock();
+    }
+
+
+    function fx(code) {
+        var url = "https://cs827290456.github.io/index/html/plugs/plug-html/guPiao4.html?"+ code;
+        if(location.href.toString().indexOf("cs827290456.github") == -1){
+            url = "guPiao4.html?"+ code;
+        }
+        var html ="<iframe height='700px' width='1400px' src='"+ url +"'>";
+        layer.open({
+            type: 3,
+            area:["90%","90%"],
+            content: html
+        });
+    }
+
+    function showPetrolInfo(code) {
+        var html ="<iframe height='600px' width='1000px' src='http://www.qiyoujiage.com?code="+ code +"'>";
+        layer.open({
+            type: 3,
+            area:["500px","400px"],
+            content: html
+        });
+    }
+
+
+    function showHistory(code) {
+     var html ="<iframe height='600px' width='1000px' src='guPiao-comm.html?code="+ code +"'>";
+     layer.open({
+      type: 3,
+      area:["500px","400px"],
+      content: html
+     });
+    }
+
+
+    function sendInfo(id) {
+        var msg = "消息 :";
+        if(id == "hj"){
+            msg += "黄金"
+        }
+        msg += document.getElementById(id).innerText
+        copyText(msg);
+    }
+
+    function copyText(text) {
+        navigator.clipboard.writeText(text)
+            .then(function() {
+                console.log('ok，复制成功===>' + text);
+            })
+            .catch(function(err) {
+                console.error('Failed to copy text: ', err);
+            });
+    }
+
+    /**
+     * 获取URL中的参数（兼容旧版JS）
+     * @param {String} [url] 可选，指定URL，默认当前页面URL
+     * @returns {Object} 参数对象
+     */
+    function getUrlParam(name) {
+            // 获取 URL 中从 ? 开始的查询字符串部分
+            var query = window.location.search.substring(1);
+            // 使用 & 分割所有参数
+            var vars = query.split("&");
+
+            // 遍历所有参数
+            for (var i = 0; i < vars.length; i++) {
+                // 用 = 分割参数名和参数值
+                var pair = vars[i].split("=");
+
+                // 如果参数名匹配，返回参数值
+                if (pair[0] == name) {
+                    // 使用 decodeURIComponent 解码 URL 编码的参数值
+                    return decodeURIComponent(pair[1]);
+                }
+            }
+
+            // 如果没有找到参数，返回 null
+            return null;
+    }
+
+    // 使用示例
+    // 假设当前 URL 是: http://example.com?page=1&sort=desc
+    // console.log(getUrlParam("page"));  // 输出 "1"
+    // console.log(getUrlParam("sort"));  // 输出 "desc"
+    // console.log(getUrlParam("id"));    // 输出 null
+</script>
+</html>
+
