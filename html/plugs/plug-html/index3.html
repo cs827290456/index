@@ -313,7 +313,7 @@
                 table_html +=  "<td align='center'>换手率</td>" ;
             if(ss.总市值)
                 table_html += "<td align='center'>总市值(亿)</td>";
-            table_html +=  "<td align='center'>操作</td>" +
+            // table_html +=  "<td align='center'>操作</td>" +
             "</tr>"
 
         // 成交量:s_[6],
@@ -334,7 +334,8 @@
             if(!isMobileDevice()) {
                 table_html += "<td  onclick=showHistory('" + code.substring(2, code.length) + "')  align='center' style='cursor: pointer;color: " + color2 + "'>" + code + "</td>"
             }
-            table_html+= "<td align='center' style='color: "+ color2 +"'>"+ stockCfg[code].name +" </td>"
+            //table_html+= "<td align='center' style='color: "+ color2 +"'>"+ stockCfg[code].name +" </td>"
+            table_html+= "<td> <span style='cursor: pointer' onclick=sendInfo('gp_"+ i +"') >&nbsp; "+  stockCfg[code].name +" &nbsp; </span> <span id='gp_"+ i +"' style='display: none' >【" + stockCfg[code].name +"】当前价格:"+ stockCfg[code].price+",涨幅:"+ stockCfg[code].zf+"%"+"</span> </td>"
             table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].price +"</td>"
             table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].zf +"</td>"
             if(ss.估价)
@@ -355,7 +356,7 @@
             table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].换手率 + "</td>"
             if(ss.总市值)
             table_html+= "<td align='right' style='color: "+ color2 +"'>"+ stockCfg[code].总市值 + "</td>"
-            table_html+= "<td> <span style='cursor: pointer' onclick=sendInfo('gp_"+ i +"') >&nbsp; 复制 &nbsp; </span> <span id='gp_"+ i +"' style='display: none' >【" + stockCfg[code].name +"】当前价格:"+ stockCfg[code].price+",涨幅:"+ stockCfg[code].zf+"%"+"</span> </td>"
+            // table_html+= "<td> <span style='cursor: pointer' onclick=sendInfo('gp_"+ i +"') >&nbsp; 复制 &nbsp; </span> <span id='gp_"+ i +"' style='display: none' >【" + stockCfg[code].name +"】当前价格:"+ stockCfg[code].price+",涨幅:"+ stockCfg[code].zf+"%"+"</span> </td>"
             table_html+= "</tr>"
         }
         table_html+= "</table>"
@@ -475,4 +476,3 @@
     // console.log(getUrlParam("id"));    // 输出 null
 </script>
 </html>
-
